@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".modules.warning.activity.SW_HistroyWarnActivity">
+    <TextView
+        android:id="@+id/tv_loading_error"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/tvColorOne"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <include layout="@layout/sw_view_top_title" />
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="未搜索到任何结果"
+        android:textColor="@color/tvColorThree"
+        android:textSize="16sp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+
+</LinearLayout>

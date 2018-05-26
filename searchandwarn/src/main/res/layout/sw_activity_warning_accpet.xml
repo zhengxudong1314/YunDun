@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".modules.warning.activity.SW_WarningAccpetActivity">
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_loading_error"
+        android:gravity="center"
+        android:textSize="17sp"
+        android:textColor="@color/tvColorOne"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <include layout="@layout/sw_view_top_title" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        app:tabIndicatorColor="@color/tvBlue"
+        app:tabSelectedTextColor="@color/title_color"
+        app:tabTextColor="@color/tvColorTwo">
+
+    </android.support.design.widget.TabLayout>
+
+    <View
+        android:id="@+id/my_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/app_line"
+        android:visibility="gone" />
+
+    <com.dahua.searchandwarn.weight.SW_NoScrollViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </com.dahua.searchandwarn.weight.SW_NoScrollViewPager>
+</LinearLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_line">#66000000</color>
+    <color name="tab_line">#660917df</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <!-- 弹框标题 -->
+    <color name="dialogTitle">#333333</color>
+    <color name="dialogTitleTwo">#DE000000</color>
+    <!-- 弹框确认 -->
+    <color name="dialogConfirm">#666666</color>
+    <!-- 弹框取消 -->
+    <color name="dialogCancel">#999999</color>
+    <!-- 弹框分割线 -->
+    <color name="dialogDivider">#BBBBBB</color>
+    <color name="title_color">#CC000000</color>
+    <color name="tvColorOne" >#99000000</color>
+    <color name="tvColorTwo" >#66000000</color>
+    <color name="tvColorThree" >#33000000</color>
+    <color name="tvBlue" >#FF3B96FF</color>
+    <color name="tvLightBlue" >#22AAFFFF</color>
+    <color name="tvRed" >#FFD0021B</color>
+</resources>

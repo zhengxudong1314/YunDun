@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.dahua.searchandwarn.modules.facesearching.activity.SW_FaceSearchingResultActivity">
+
+    <include layout="@layout/sw_view_top_title" />
+
+    <TextView
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/tvBlue"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="静态对比结果"
+        android:textColor="@color/colorWhite" />
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_static_no"
+        android:gravity="center"
+        android:textColor="@color/tvColorOne"
+        android:textSize="16sp"
+        android:text="暂无比对结果"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_static"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/tvBlue"
+        android:gravity="center_vertical"
+        android:textColor="@color/colorWhite">
+
+        <TextView
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:gravity="center_vertical"
+            android:text="动态对比结果"
+            android:textColor="@color/colorWhite" />
+
+        <ImageView
+            android:id="@+id/iv_zhou"
+            android:layout_width="22dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/sw_icon_zhou_unselected" />
+
+        <ImageView
+            android:id="@+id/iv_tu"
+            android:layout_width="22dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="55dp"
+            android:src="@drawable/sw_icon_img" />
+
+    </RelativeLayout>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_dym_no"
+        android:gravity="center"
+        android:textColor="@color/tvColorOne"
+        android:textSize="16sp"
+        android:text="暂无比对结果"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_dynamic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_site"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/tvColorTwo" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/cl2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rl"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/tv_ignore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/sw_icon_ignore"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="@color/tvColorTwo">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/sw_icon_ignore" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ignore"
+                android:textColor="@color/tvColorTwo" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tv_dispose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/sw_icon_dispose" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dispose"
+                android:textColor="@color/tvColorTwo" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tv_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/sw_icon_details"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="@color/tvColorTwo">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/sw_icon_details" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/details"
+                android:textColor="@color/tvColorTwo" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/sw_icon_location_gray"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:textColor="@color/tvColorTwo">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/sw_icon_location_gray" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/location"
+                android:textColor="@color/tvColorTwo" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/app_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/cl2"
+        android:layout_marginTop="10dp"
+        android:background="@color/tvColorTwo" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_line"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_ignore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/border_radius_gray"
+            android:gravity="top"
+            android:hint="请输入忽略原因"
+            android:minLines="4"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="22dp"
+            android:layout_below="@id/et_ignore"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/sure_ignore" />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/et_ignore"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/cancel" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_type"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
+</RelativeLayout>

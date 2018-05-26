@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">SearchAndWarn</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="reset">重置</string>
+    <string name="choose">请选择</string>
+    <string name="input">请输入</string>
+    <string name="warn_start_time">预警开始时间</string>
+    <string name="warn_end_time">预警结束时间</string>
+    <string name="warn_site">预警地点</string>
+    <string name="warn_state">预警状态</string>
+    <string name="warn_reason">布控原因</string>
+    <string name="warn_card_num">预警人身份证</string>
+    <!-- 预警标题-->
+    <string name="ignore_warn">忽略预警</string>
+    <string name="warn_accpet">预警接收</string>
+    <string name="warn_dispose">预警处理</string>
+    <string name="warn_details">预警详情</string>
+    <string name="warn_search_condition">搜索条件</string>
+
+    <!-- 基本信息-->
+    <string name="capture_time">抓拍时间：</string>
+    <string name="similarity">相似度：</string>
+    <string name="control_id">布控人编号：</string>
+    <string name="capture_site">抓拍地点：</string>
+    <string name="control_lib">所属布控库：</string>
+    <string name="pusher">推送人：</string>
+    <string name="push_time">推送时间：</string>
+    <string name="ignore">忽略</string>
+    <string name="sure_ignore">确定忽略</string>
+    <string name="dispose">处理</string>
+    <string name="details">详情</string>
+    <string name="location">定位</string>
+    <string name="yes_cancle">是，确认可消警</string>
+    <string name="no_cancle">否，还需继续跟踪解决</string>
+    <!-- 人脸检索-->
+    <string name="face_start_time">开始时间</string>
+    <string name="face_end_time">结束时间</string>
+    <string name="face_similarity">相似度</string>
+    <string name="face_capture_site">抓拍地点</string>
+    <string name="face_upload_pic">点击上传图像</string>
+    <string name="chaxun">查询</string>
+</resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@drawable/test1"
+            android:id="@+id/iv_img"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="15dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/tvColorOne"
+                    android:layout_marginTop="10dp"
+                    android:text="2018/05/12 19:33:55"
+                    android:id="@+id/tv_time"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/tvRed"
+                    android:text="99.88%"
+                    android:id="@+id/tv_similarity"
+                    android:layout_marginRight="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tv_site"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/tvColorOne"
+                android:layout_marginTop="10dp"
+                android:text="浙江省杭州市西湖区武林广场地铁站4A出口"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp" />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/tvColorTwo" />
+</LinearLayout>

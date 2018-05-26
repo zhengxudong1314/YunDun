@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="pickerview_cancel">Cancel</string>
+    <string name="pickerview_submit">OK</string>
+    <string name="pickerview_year">Y</string>
+    <string name="pickerview_month">M</string>
+    <string name="pickerview_day">D</string>
+    <string name="pickerview_hours">H</string>
+    <string name="pickerview_minutes">M</string>
+    <string name="pickerview_seconds">S</string>
+    <string name="pickerview_choose_start_time">Please select start time</string>
+    <string name="pickerview_choose_end_time">Please select end time</string>
+    <string name="pickerview_next_step">Next</string>
+    <string name="pickerview_last_step">Back</string>
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:background="#11000000"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+
+        <TextView
+            android:id="@+id/tv_cacle"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/tvBlue" />
+
+        <TextView
+            android:id="@+id/tv_sure"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:text="@string/confirm"
+            android:textColor="@color/tvBlue" />
+
+    </RelativeLayout>
+    <RadioGroup
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:textColor="@color/title_color"
+            android:text="是，确认可以消警"
+            android:id="@+id/rb_yes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:checked="true"
+            android:textColor="@color/tvRed"
+            android:text="否，还需继续跟踪解决"
+            android:id="@+id/rb_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
+</LinearLayout>

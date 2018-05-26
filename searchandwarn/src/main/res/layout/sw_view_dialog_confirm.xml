@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/shape_dialog_radius"
+    >
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textAlignment="center"
+        android:textColor="@color/dialogTitle"
+        android:textSize="17sp"
+        tools:text="标题" />
+
+    <EditText
+        android:gravity="top"
+        android:hint="请输入忽略原因"
+        android:padding="10dp"
+        android:layout_margin="15dp"
+        android:background="@drawable/border_radius_gray"
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minLines="5"
+        android:textColor="@color/dialogTitle"
+        android:textSize="15sp"
+         />
+    <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/dialogDivider"
+    />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bt_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/cancel"
+            android:textColor="@color/dialogCancel"
+            android:textSize="15sp" />
+
+        <View
+            android:id="@+id/v_line"
+            android:layout_width="1dp"
+            android:layout_height="48dp"
+            android:background="@color/dialogDivider" />
+
+        <Button
+            android:id="@+id/bt_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/confirm"
+            android:textColor="@color/dialogConfirm"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</LinearLayout>
