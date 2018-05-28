@@ -21,9 +21,12 @@ import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
 import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
+import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +64,7 @@ public class SW_DisposeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.sw_fragment_dispose, null);
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -107,13 +111,6 @@ public class SW_DisposeFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        pageNum=1;
-        getNetData();
-    }
-
     private void getNetData() {
         final Map<String, String> map = new HashMap<>();
         // todo  替换用户名为 SW_UserLoginBean.USERNANE
@@ -152,7 +149,7 @@ public class SW_DisposeFragment extends Fragment {
                                     disposeData.add(datas.get(i));
                                 }
                             }
-
+                            LogUtils.e(disposeData.size()+"");
                             disposeAdapter = new SW_DisposeAdapter(getActivity(), R.layout.sw_item_dispose, disposeData);
                             rv.setLayoutManager(linearLayoutManager);
                             if (disposeData == null || disposeData.size() == 0) {
@@ -184,6 +181,15 @@ public class SW_DisposeFragment extends Fragment {
                     }
                 });
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void onMoon(SW_HistoryWarnBean.DataBean dataBean){
+        LogUtils.e(dataBean.toString());
+        disposeData.add(0,dataBean);
+        if (disposeAdapter!=null){
+            disposeAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

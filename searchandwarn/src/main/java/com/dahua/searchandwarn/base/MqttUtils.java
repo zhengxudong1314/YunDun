@@ -87,8 +87,10 @@ public class MqttUtils {
                                 LogUtils.e("接收消息主题 :"+mqttTopic.getName());
                                 LogUtils.e("接收消息Qos  :"+mqttMessage.getQos());
                                 String s = new String(mqttMessage.getPayload());
+                                String s1 = new String(s.getBytes("GBK"));
                                 Gson gson = new Gson();
-                                SW_NewMessageBean sw_newMessageBean = gson.fromJson(s, SW_NewMessageBean.class);
+                                SW_NewMessageBean sw_newMessageBean = gson.fromJson(s1, SW_NewMessageBean.class);
+                                LogUtils.e(sw_newMessageBean.toString());
                                 String device_name = sw_newMessageBean.getDevice_name();
                                 LogUtils.e("接收消息内容  :"+device_name);
                                 getNotification(context,mqttTopic.getName(),device_name);

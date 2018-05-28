@@ -47,7 +47,7 @@ public class UnReadService extends Service {
         compositeDisposable = new CompositeDisposable();
         Map<String, String> map = new HashMap<>();
         // todo  替换用户名为 SW_UserLoginBean.USERNANE
-        map.put("appUser", "t2");
+        map.put("appUser", SW_UserLoginBean.USERNANE);
         map.put("pageNum", "1");
         map.put("pageSize", "50");
         getNetData(map);

@@ -11,8 +11,9 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 
+import com.dahua.searchandwarn.base.UnReadService;
+import com.dahua.searchandwarn.model.SW_UnReadNum;
 import com.dahua.searchandwarn.modules.facesearching.activity.SW_FaceSearchingActivity;
-import com.dahua.searchandwarn.modules.warning.activity.SW_SearchActivity;
 import com.dahua.searchandwarn.modules.warning.activity.SW_WarningAccpetActivity;
 import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.Utils;
@@ -25,6 +26,9 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.internal.MemoryPersistence;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class MainActivity extends AppCompatActivity {
     //tcp://172.6.3.111:1883
@@ -35,20 +39,24 @@ public class MainActivity extends AppCompatActivity {
     private String passWord = "admin";
     private MqttClient client;
     private MqttConnectOptions options;
+    private Button bt4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button bt4 = (Button) findViewById(R.id.bt4);
+        EventBus.getDefault().register(this);
+        bt4 = (Button) findViewById(R.id.bt4);
         Button bt3 = (Button) findViewById(R.id.bt3);
         Button bt2 = (Button) findViewById(R.id.bt2);
         Button bt1 = (Button) findViewById(R.id.bt1);
         Utils.init(this.getApplication());
+        Intent intent = new Intent(this, UnReadService.class);
+        startService(intent);
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, SW_SearchActivity.class));
+                startActivity(new Intent(MainActivity.this, SW_WarningAccpetActivity.class));
             }
         });
         bt2.setOnClickListener(new View.OnClickListener() {
@@ -71,12 +79,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //start();
-        //MqttUtils.connectMqtt(this);
-        /*Intent intent = new Intent(this, UnReadService.class);
-        startService(intent);*/
+       // MqttUtils.connectMqtt(this);
+
     }
 
-
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void onDeed(SW_UnReadNum bean){
+        bt4.setText(bean.getNum()+"");
+    }
     public void getNotification() {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 this, 0, new Intent(this, SW_WarningAccpetActivity.class), 0);
@@ -160,5 +170,12 @@ public class MainActivity extends AppCompatActivity {
         } catch (MqttException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

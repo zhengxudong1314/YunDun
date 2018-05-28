@@ -53,8 +53,10 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
         this.num = num.getNum();
         LogUtils.e(""+num.getNum());
     }
+
     @Override
     protected void convert(BaseViewHolder helper, final SW_HistoryWarnBean.DataBean item) {
+
         final ImageView iv_type = helper.getView(R.id.iv_type);
         int flag = 0;
         if (list != null && list.size() != 0) {
@@ -97,10 +99,11 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 numdown(item);
                 sqlietModel.insertData(item.getAlarmId());
+                list = sqlietModel.queryAll();
                 intent = new Intent(context, SW_IgnoreActivity.class);
                 intent.putExtra("alarmId", item.getAlarmId());
                 intent.putExtra("operator", SW_UserLoginBean.USERNANE);
-                intent.putExtra("position", position);
+                intent.putExtra("position", position+"");
                 context.startActivity(intent);
                 notifyDataSetChanged();
 
@@ -115,11 +118,13 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 numdown(item);
                 sqlietModel.insertData(item.getAlarmId());
+                list = sqlietModel.queryAll();
                 intent = new Intent(context, SW_DisposeDetailsActivity.class);
                 intent.putExtra("alarmId", item.getAlarmId());
                 intent.putExtra("operator", SW_UserLoginBean.USERNANE);
-                intent.putExtra("position", position);
+                intent.putExtra("position", position+"");
                 context.startActivity(intent);
+                notifyDataSetChanged();
             }
         });
         tv_details.setOnClickListener(new View.OnClickListener() {
@@ -130,9 +135,11 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 numdown(item);
                 sqlietModel.insertData(item.getAlarmId());
+                list = sqlietModel.queryAll();
                 intent = new Intent(context, SW_WarningDetailsActivity.class);
                 intent.putExtra("alarmId", item.getAlarmId());
                 context.startActivity(intent);
+                notifyDataSetChanged();
             }
         });
         tv_location.setOnClickListener(new View.OnClickListener() {
@@ -143,12 +150,14 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 numdown(item);
                 sqlietModel.insertData(item.getAlarmId());
+                list = sqlietModel.queryAll();
                 intent = new Intent();
                 intent.setComponent(new ComponentName("com.mm.dss.map", "com.mm.dss.map.BaiduMapActivity"));
                 intent.putExtra("longitude", 116.222);//经度
                 intent.putExtra("latitued", 83.222);//纬度
                 intent.putExtra("name", "dahua");
                 context.startActivity(intent);
+                notifyDataSetChanged();
             }
         });
 

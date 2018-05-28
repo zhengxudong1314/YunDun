@@ -24,7 +24,6 @@ import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.model.TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.dahua.searchandwarn.utils.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -84,11 +83,15 @@ public class SW_UndisposeFragment extends Fragment {
         pbLoading = (ProgressBar) view.findViewById(R.id.pb_loading);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         sqlietModel = new SqlietModel(getActivity());
-        list = sqlietModel.queryAll();
-        undisposeData = new ArrayList<>();
         tvNoData = (TextView) view.findViewById(R.id.tv_no_data);
         compositeDisposable = new CompositeDisposable();
+        list = sqlietModel.queryAll();
+        undisposeData = new ArrayList<>();
+        rv.setLayoutManager(linearLayoutManager);
         getNetData();
+        undisposeAdapter = new SW_UndisposeAdapter(getActivity(), R.layout.sw_item_undispose_unread, undisposeData, list);
+
+
         tvLoading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,7 +100,7 @@ public class SW_UndisposeFragment extends Fragment {
                 tvLoading.setText("加载中");
                 tvLoading.setFocusable(false);
                 getNetData();
-
+                undisposeAdapter.notifyDataSetChanged();
             }
         });
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -119,6 +122,7 @@ public class SW_UndisposeFragment extends Fragment {
         });
 
     }
+
 
 
     private void getNetData() {
@@ -163,9 +167,6 @@ public class SW_UndisposeFragment extends Fragment {
                                     undisposeData.add(datas.get(i));
                                 }
                             }
-                            rv.setLayoutManager(linearLayoutManager);
-                            undisposeAdapter = new SW_UndisposeAdapter(getActivity(), R.layout.sw_item_undispose_unread, undisposeData, list);
-
                             if (undisposeData == null || undisposeData.size() == 0) {
                                 tvNoData.setVisibility(View.VISIBLE);
                             } else {
@@ -205,9 +206,12 @@ public class SW_UndisposeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onMoon(TypeBean typeBean) {
-        LogUtils.e("" + typeBean.getPosition());
-        undisposeData.remove(typeBean.getPosition());
-        undisposeAdapter.notifyDataSetChanged();
+        if (typeBean.getPosition()!="false"){
+            int p = Integer.valueOf(typeBean.getPosition());
+            EventBus.getDefault().postSticky(undisposeData.get(p));
+            undisposeData.remove(p);
+            undisposeAdapter.notifyDataSetChanged();
+        }
     }
 
 }

@@ -163,12 +163,15 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
 
         } else if (i == R.id.iv_one) {
             //抓拍图片
+            intent.putExtra("imgUrl",datas.getSmallImg());
             startActivity(intent);
         } else if (i == R.id.iv_two) {
             //图库图片
+            intent.putExtra("imgUrl",datas.getOriginalImg());
             startActivity(intent);
         } else if (i == R.id.iv_three) {
             //选择大图
+            intent.putExtra("imgUrl",datas.getBigImg());
             startActivity(intent);
         }
     }

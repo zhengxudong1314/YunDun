@@ -261,4 +261,35 @@ public class SW_NewMessageBean {
     public void setFace_age(int face_age) {
         this.face_age = face_age;
     }
+
+    @Override
+    public String toString() {
+        return "SW_NewMessageBean{" +
+                "control_similarity=" + control_similarity +
+                ", parentPusher=" + parentPusher +
+                ", originalImg='" + originalImg + '\'' +
+                ", device_latitude=" + device_latitude +
+                ", blackId='" + blackId + '\'' +
+                ", data_src_type='" + data_src_type + '\'' +
+                ", bigImg='" + bigImg + '\'' +
+                ", device_name='" + device_name + '\'' +
+                ", _tag_='" + _tag_ + '\'' +
+                ", face_gender=" + face_gender +
+                ", similarity=" + similarity +
+                ", control_suspectname='" + control_suspectname + '\'' +
+                ", id='" + id + '\'' +
+                ", appPusher='" + appPusher + '\'' +
+                ", glass=" + glass +
+                ", device_id='" + device_id + '\'' +
+                ", smallImg='" + smallImg + '\'' +
+                ", device_longitude=" + device_longitude +
+                ", short_time='" + short_time + '\'' +
+                ", source_image1='" + source_image1 + '\'' +
+                ", source_image2='" + source_image2 + '\'' +
+                ", face_smiling='" + face_smiling + '\'' +
+                ", save_time='" + save_time + '\'' +
+                ", control_reason='" + control_reason + '\'' +
+                ", face_age=" + face_age +
+                '}';
+    }
 }

@@ -92,7 +92,7 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
             map.put("reason", reason);
         }
         // todo  替换用户名为 SW_UserLoginBean.USERNANE
-        map.put("appUser", "t2");
+        map.put("appUser", SW_UserLoginBean.USERNANE);
         map.put("pageNum", "1");
         map.put("pageSize", "50");
         return map;

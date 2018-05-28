@@ -3,7 +3,6 @@ package com.dahua.searchandwarn.modules.facesearching.activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -29,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
@@ -55,6 +53,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -91,6 +90,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
     private CompositeDisposable compositeDisposable;
     private Intent intent;
     private String deviceCodes;
+    private String endPath = Environment.getExternalStorageDirectory() + "/img.jpeg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,24 +158,32 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             showPopupWindow();
 
         } else if (i == R.id.tv_start_time) {
-             getStartTimePicker(tvStartTime);
+            getStartTimePicker(tvStartTime);
         } else if (i == R.id.tv_end_time) {
             getEndStartTimePicker(tvEndTime);
         } else if (i == R.id.tv_site) {
             startActivity(new Intent(this, SW_TreeActivity.class));
         } else if (i == R.id.tv_sure) {
+            imgUrl = null;
+            for (int j = 0; j < list.size(); j++) {
+                if (list.get(j).isChecked()) {
+                    imgUrl = list.get(j).getSmallImgBase64();
+                }
+            }
             String startTime = tvStartTime.getText().toString().trim();
             String endTime = tvEndTime.getText().toString().trim();
             String similarity = etSimilarity.getText().toString().trim();
             SW_FaceParams sw_faceParams = new SW_FaceParams();
             sw_faceParams.setStartTime(startTime);
             sw_faceParams.setEndTime(endTime);
-            if (deviceCodes==null){
+            if (deviceCodes == null) {
                 sw_faceParams.setDeviceCodes("-1");
-            }else {
+            } else {
                 sw_faceParams.setDeviceCodes(deviceCodes);
             }
-            sw_faceParams.setImageBase64(imgUrl);
+            if (!TextUtils.isEmpty(imgUrl)) {
+                sw_faceParams.setImageBase64(imgUrl);
+            }
             sw_faceParams.setSimilarity(similarity);
             sw_faceParams.setOperator("xzm");
             EventBus.getDefault().postSticky(sw_faceParams);
@@ -243,20 +251,23 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CAMERA:
-                if (resultCode==RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     if (file != null) {
                         try {
-                            Glide.with(this).load(file).into(ivFace);
                             llFace.setVisibility(View.GONE);
                             ivFace.setVisibility(View.VISIBLE);
                             String path = file.getAbsolutePath();
-                            LogUtils.e(path);
-                            getPic(path);
+                            Bitmap bitmap = BitmapFactory.decodeFile(path);
+                            FileOutputStream os = new FileOutputStream(endPath);
+
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, os);
+                            ivFace.setImageBitmap(bitmap);
+                            getPic(endPath);
                         } catch (Exception ex) {
                         }
 
                     }
-                }else {
+                } else {
                     llFace.setVisibility(View.VISIBLE);
                     ivFace.setVisibility(View.GONE);
                 }
@@ -269,7 +280,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                     String path = "";
                     if (data != null) {
                         Uri uri = data.getData();
-
+/*
                         if (!TextUtils.isEmpty(uri.getAuthority())) {
                             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                             if (cursor != null) {
@@ -281,14 +292,18 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                             }
                         } else {
                             path = uri.getPath();
-                        }
+                        }*/
 
                         InputStream inputStream = resolver.openInputStream(uri);
-                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        FileOutputStream os = new FileOutputStream(endPath);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, os);
+
                         ivFace.setImageBitmap(bitmap);
                         llFace.setVisibility(View.GONE);
                         ivFace.setVisibility(View.VISIBLE);
-                        getPic(path);
+                        LogUtils.e(endPath);
+                        getPic(endPath);
                     }
                 } catch (FileNotFoundException e) {
 
@@ -342,7 +357,6 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                                     onBind = true;
                                     final int adapterPosition = helper.getAdapterPosition();
                                     Bitmap bitmap = decode(item.getSmallImgBase64());
-                                    imgUrl = item.getSmallImgBase64();
                                     helper.setImageBitmap(R.id.iv_face, bitmap);
                                     final CheckBox cb = helper.getView(R.id.cb);
                                     cb.setChecked(item.isChecked());
@@ -354,13 +368,16 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                                                 if (b) {
                                                     for (int i = 0; i < list.size(); i++) {
                                                         if (i == adapterPosition) {
-                                                            imgUrl = item.getSmallImgBase64();
                                                             list.get(i).setChecked(true);
                                                         } else {
                                                             list.get(i).setChecked(false);
                                                         }
                                                     }
                                                     notifyDataSetChanged();
+                                                }else {
+                                                    for (int i = 0; i < list.size(); i++) {
+                                                        list.get(i).setChecked(false);
+                                                    }
                                                 }
                                             }
                                         }
@@ -474,7 +491,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         Bitmap bitmap = BitmapFactory.decodeFile(path);
         //convert to byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 40, baos);
         byte[] bytes = baos.toByteArray();
 
         //base64 encode

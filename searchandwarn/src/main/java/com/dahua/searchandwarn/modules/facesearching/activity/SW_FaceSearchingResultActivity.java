@@ -92,6 +92,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         map.put("deviceCodes", deviceCodes);
         map.put("imageBase64", imageBase64);
         map.put("operator", operator);
+        LogUtils.e(similarity+":"+operator);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
         restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
                 .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_DynamicBean>>() {
@@ -121,6 +122,8 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                             } else {
                                 changeRvTu();
                             }
+                        }else {
+                            tvDymNo.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -144,10 +147,8 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                 helper.setText(R.id.tv_time, item.getSimilarity())
                         .setText(R.id.tv_similarity, item.getFaceTime())
                         .setText(R.id.tv_site, item.getSex());
-                ImageView ivSmall = helper.getView(R.id.iv_small);
-                ImageView ivBig = helper.getView(R.id.iv_big);
-                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivSmall);
-                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image2()).placeholder(R.drawable.sw_icon_img_unselected).into(ivBig);
+                ImageView ivImg = helper.getView(R.id.iv_img);
+                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
             }
         };
         rvDynamic.setAdapter(dynamicAdapter);
@@ -168,6 +169,10 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
             protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
                 helper.setText(R.id.tv_time, item.getSimilarity())
                         .setText(R.id.tv_site, item.getSex());
+                ImageView iv_small = helper.getView(R.id.iv_small);
+                ImageView iv_big = helper.getView(R.id.iv_big);
+                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_small);
+                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image2()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_big);
             }
         };
         rvDynamic.setAdapter(dynamicAdapter);
@@ -234,6 +239,8 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                                     }
                                 });
                             }
+                        }else {
+                            tvStaticNo.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -257,8 +264,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         startTime = bean.getStartTime();
         endTime = bean.getEndTime();
         operator = bean.getOperator();
-        LogUtils.e(deviceCodes);
-        //LogUtils.e(imageBase64);
+        LogUtils.e(imageBase64);
     }
 
     @Override

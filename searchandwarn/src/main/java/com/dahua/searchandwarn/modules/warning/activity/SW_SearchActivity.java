@@ -201,11 +201,15 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
                     appendStrNum("4");
                     appendStr(s4);
                 }
-                String substring = strState.substring(1);
-                String subNum = strNum.substring(1);
-                state = subNum;
+                if (strState.length() > 0) {
+                    String substring = strState.substring(1);
+                    tvState.setText(substring);
+                }
+                if (strNum.length() > 0) {
+                    String subNum = strNum.substring(1);
+                    state = subNum;
+                }
 
-                tvState.setText(substring);
                 popupWindow.dismiss();
 
             }

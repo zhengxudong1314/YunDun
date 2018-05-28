@@ -9,9 +9,10 @@ package com.dahua.searchandwarn.model;
 public class TypeBean {
     private String errer;
 
-    private int position;
+    private String position;
 
-    public TypeBean() {
+    public TypeBean(String position) {
+        this.position = position;
     }
 
     public String getErrer() {
@@ -22,16 +23,11 @@ public class TypeBean {
         this.errer = errer;
     }
 
-
-    public TypeBean(int position) {
-        this.position = position;
-    }
-
-    public int getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 }

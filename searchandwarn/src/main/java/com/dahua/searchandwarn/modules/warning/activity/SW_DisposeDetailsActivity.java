@@ -66,7 +66,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
     private SW_SingleWarnBean.DataBean datas;
     private RecyclerView rv;
     private TextView tvLoadingError;
-    private int position;
+    private String position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +148,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
 
     private void initView() {
         alarmId = getIntent().getStringExtra("alarmId");
-        position = getIntent().getIntExtra("position",0);
+        position = getIntent().getStringExtra("position");
         operator = getIntent().getStringExtra("operator");
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivSearch = (ImageView) findViewById(R.id.iv_search);
@@ -197,12 +197,15 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
             startActivity(new Intent(SW_DisposeDetailsActivity.this.getApplicationContext(), SW_SearchActivity.class));
         } else if (i == R.id.iv_one) {
             //抓拍图片
+            intent.putExtra("imgUrl",datas.getSmallImg());
             startActivity(intent);
         } else if (i == R.id.iv_two) {
             //图库图片
+            intent.putExtra("imgUrl",datas.getOriginalImg());
             startActivity(intent);
         } else if (i == R.id.iv_three) {
             //选择大图
+            intent.putExtra("imgUrl",datas.getBigImg());
             startActivity(intent);
         } else if (i == R.id.tv_cacle) {
             finish();

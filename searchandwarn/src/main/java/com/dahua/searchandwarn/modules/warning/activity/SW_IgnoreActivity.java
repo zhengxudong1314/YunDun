@@ -19,7 +19,6 @@ import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_IgnoreBean;
 import com.dahua.searchandwarn.model.SW_SingleWarnBean;
 import com.dahua.searchandwarn.model.SW_UserLoginBean;
-import com.dahua.searchandwarn.model.TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.KeyboardUtils;
@@ -58,7 +57,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
     private String ignoreMsg;
     private SW_SingleWarnBean.DataBean datas;
     private TextView tvLoadingError;
-    private int position;
+    private String position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +156,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                             LoadingDialogUtils.dismiss();
                             finish();
                         } else {
+                            EventBus.getDefault().postSticky("false");
                             finish();
                         }
                     }
@@ -169,7 +169,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onComplete() {
                         LoadingDialogUtils.dismiss();
-                        EventBus.getDefault().postSticky(new TypeBean(position));
+
                     }
                 });
 
@@ -179,7 +179,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
     private void initView() {
 
         alarmId = getIntent().getStringExtra("alarmId");
-        position = getIntent().getIntExtra("position", 0);
+        position = getIntent().getStringExtra("position");
         operator = getIntent().getStringExtra("operator");
         intent = new Intent(SW_IgnoreActivity.this, SW_PhotoActivity.class);
         ivBack = (ImageView) findViewById(R.id.iv_back);
@@ -231,12 +231,15 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
             startActivity(new Intent(SW_IgnoreActivity.this.getApplicationContext(), SW_SearchActivity.class));
         } else if (i == R.id.iv_one) {
             //抓拍图片
+            intent.putExtra("imgUrl",datas.getSmallImg());
             startActivity(intent);
         } else if (i == R.id.iv_two) {
             //图库图片
+            intent.putExtra("imgUrl",datas.getOriginalImg());
             startActivity(intent);
         } else if (i == R.id.iv_three) {
             //选择大图
+            intent.putExtra("imgUrl",datas.getBigImg());
             startActivity(intent);
         } else if (i == R.id.tv_cacle) {
             KeyboardUtils.hideSoftInput(SW_IgnoreActivity.this);

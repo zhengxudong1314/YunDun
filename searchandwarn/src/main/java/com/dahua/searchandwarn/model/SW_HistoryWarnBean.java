@@ -268,7 +268,36 @@ public class SW_HistoryWarnBean {
             this.status = status;
         }
 
-
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "parentPusher='" + parentPusher + '\'' +
+                    ", smallImg='" + smallImg + '\'' +
+                    ", objBottom='" + objBottom + '\'' +
+                    ", faceCardNum='" + faceCardNum + '\'' +
+                    ", controlReason='" + controlReason + '\'' +
+                    ", originalImg='" + originalImg + '\'' +
+                    ", libName='" + libName + '\'' +
+                    ", deviceCode='" + deviceCode + '\'' +
+                    ", deviceName='" + deviceName + '\'' +
+                    ", faceName='" + faceName + '\'' +
+                    ", bigImg='" + bigImg + '\'' +
+                    ", similarity=" + similarity +
+                    ", objLeft='" + objLeft + '\'' +
+                    ", longLabel='" + longLabel + '\'' +
+                    ", shortTime='" + shortTime + '\'' +
+                    ", alarmId='" + alarmId + '\'' +
+                    ", controlSimilarity=" + controlSimilarity +
+                    ", deviceX=" + deviceX +
+                    ", shortLabel='" + shortLabel + '\'' +
+                    ", deviceY=" + deviceY +
+                    ", saveTime='" + saveTime + '\'' +
+                    ", objRight='" + objRight + '\'' +
+                    ", objTop='" + objTop + '\'' +
+                    ", status='" + status + '\'' +
+                    ", isRead=" + isRead +
+                    '}';
+        }
     }
 
 }
