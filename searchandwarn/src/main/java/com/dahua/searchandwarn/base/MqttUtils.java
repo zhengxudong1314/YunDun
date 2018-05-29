@@ -20,6 +20,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.internal.MemoryPersistence;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 作用：
@@ -94,6 +95,9 @@ public class MqttUtils {
                                 String device_name = sw_newMessageBean.getDevice_name();
                                 LogUtils.e("接收消息内容  :"+device_name);
                                 getNotification(context,mqttTopic.getName(),device_name);
+                                SW_NewMessageBean newMessageBean = new SW_NewMessageBean();
+                                sw_newMessageBean.setNewMessage(0);
+                                EventBus.getDefault().postSticky(newMessageBean);
                             }
 
                             @Override
@@ -114,7 +118,7 @@ public class MqttUtils {
     }
     private static void getNotification(Context context,String topic,String message){
         PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, new Intent(context, SW_WarningAccpetActivity.class), 0);
+                context, 0, new Intent(context, SW_WarningAccpetActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(com.dahua.searchandwarn.R.drawable.test1)
                 .setContentTitle(topic)

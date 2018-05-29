@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_DynamicBean;
+import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 public class SW_DynamicDialogActivity extends AppCompatActivity {
     private TextView tvTitle;
@@ -29,7 +30,7 @@ public class SW_DynamicDialogActivity extends AppCompatActivity {
         initView();
         dataBean = (SW_DynamicBean.DataBean) getIntent().getSerializableExtra("datas");
         tvTitle.setText("动态对比");
-        tvSimilarity.setText(dataBean.getSimilarity()+"%");
+        tvSimilarity.setText(TwoPointUtils.doubleToString(Double.valueOf(dataBean.getSimilarity()))+"%");
         tvTime.setText(dataBean.getFaceTime());
         tvAge.setText(dataBean.getAge());
         String sex = dataBean.getSex();

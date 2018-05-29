@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_StaticBean;
+import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 public class SW_StaticDialogActivity extends AppCompatActivity {
 
@@ -29,9 +30,8 @@ public class SW_StaticDialogActivity extends AppCompatActivity {
         initView();
         SW_StaticBean.DataBean datas = (SW_StaticBean.DataBean) getIntent().getSerializableExtra("datas");
 
-        Glide.with(this).load("").into(ivImg);
         tvTitle.setText("静态比对");
-        tvSimilarity.setText(datas.getSimilarity() + "%");
+        tvSimilarity.setText(TwoPointUtils.doubleToString(Double.valueOf(datas.getSimilarity())) + "%");
         tvName.setText(datas.getName());
         tvCardId.setText(datas.getCardNum());
         tvKuId.setText(datas.getLibId());
@@ -49,8 +49,8 @@ public class SW_StaticDialogActivity extends AppCompatActivity {
     private void initView() {
         ivImg = (ImageView) findViewById(R.id.iv_img);
         ivBack = (ImageView) findViewById(R.id.iv_back);
-        tvTitle = (TextView) findViewById(R.id.tv_name);
-        tvName = (TextView) findViewById(R.id.tv_title);
+        tvTitle = (TextView) findViewById(R.id.tv_title);
+        tvName = (TextView) findViewById(R.id.tv_name);
         tvSimilarity = (TextView) findViewById(R.id.tv_similarity);
         tvKuName = (TextView) findViewById(R.id.tv_kuname);
         tvKuId = (TextView) findViewById(R.id.tv_kuid);

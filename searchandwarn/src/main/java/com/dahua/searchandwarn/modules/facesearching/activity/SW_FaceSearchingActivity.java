@@ -165,9 +165,11 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             startActivity(new Intent(this, SW_TreeActivity.class));
         } else if (i == R.id.tv_sure) {
             imgUrl = null;
-            for (int j = 0; j < list.size(); j++) {
-                if (list.get(j).isChecked()) {
-                    imgUrl = list.get(j).getSmallImgBase64();
+            if (list!=null){
+                for (int j = 0; j < list.size(); j++) {
+                    if (list.get(j).isChecked()) {
+                        imgUrl = list.get(j).getSmallImgBase64();
+                    }
                 }
             }
             String startTime = tvStartTime.getText().toString().trim();

@@ -18,6 +18,7 @@ import com.dahua.searchandwarn.model.SW_SingleWarnBean;
 import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
+import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
@@ -85,7 +86,7 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
                             tvLoadingError.setVisibility(View.GONE);
                             datas = sw_singleWarnBean.getData();
                             tvNoData.setVisibility(View.GONE);
-                            tvSimilarity.setText(datas.getSimilarity() + "%");
+                            tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
                             tvCaptureTime.setText(datas.getShortTime());
                             tvId.setText(datas.getDeviceCode());
                             if (datas.getParentPusher().equals("-1")) {

@@ -23,11 +23,12 @@ import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_DisposeBean;
 import com.dahua.searchandwarn.model.SW_SingleWarnBean;
+import com.dahua.searchandwarn.model.SW_TypeBean;
 import com.dahua.searchandwarn.model.SW_UserLoginBean;
-import com.dahua.searchandwarn.model.TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.ToastUtils;
+import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -109,7 +110,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                             LoadingDialogUtils.dismiss();
                             datas = sw_singleWarnBean.getData();
                             tvNoData.setVisibility(View.GONE);
-                            tvSimilarity.setText(datas.getSimilarity() + "%");
+                            tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
                             tvCaptureTime.setText(datas.getShortTime());
                             tvId.setText(datas.getDeviceCode());
                             if (datas.getParentPusher().equals("-1")) {
@@ -255,7 +256,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                     @Override
                     public void onNext(SW_DisposeBean sw_disposeBean) {
                         if (sw_disposeBean.getRetCode() == 0) {
-                            EventBus.getDefault().postSticky(new TypeBean(position));
+                            EventBus.getDefault().postSticky(new SW_TypeBean(position));
                             ToastUtils.showLong("处理成功");
                             LoadingDialogUtils.dismiss();
                             finish();

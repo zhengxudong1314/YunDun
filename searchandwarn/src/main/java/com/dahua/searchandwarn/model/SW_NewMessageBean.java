@@ -61,6 +61,15 @@ public class SW_NewMessageBean {
     private String save_time;
     private String control_reason;
     private int face_age;
+    private int newMessage;
+
+    public int getNewMessage() {
+        return newMessage;
+    }
+
+    public void setNewMessage(int newMessage) {
+        this.newMessage = newMessage;
+    }
 
     public double getControl_similarity() {
         return control_similarity;

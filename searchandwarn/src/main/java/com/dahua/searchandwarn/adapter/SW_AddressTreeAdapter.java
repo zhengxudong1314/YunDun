@@ -15,7 +15,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_AddressTreeBean;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
-import com.dahua.searchandwarn.utils.LogUtils;
+import com.dahua.searchandwarn.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -50,6 +50,33 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.D
                 final CheckBox cb_name1 = helper.getView(R.id.cb_name);
                 cb_name1.setText(item1.getOrgName());
                 final RecyclerView rv1 = helper.getView(R.id.rv);
+                ImageView iv_log = helper.getView(R.id.iv_log);
+                if (TextUtils.isEmpty(item1.getOrgName())){
+                    helper.setText(R.id.cb_name, item1.getDevName());
+                    iv_log.setVisibility(View.INVISIBLE);
+                    cb_name1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            address = item.getOrgName()+item1.getDevName();
+                            EventBus.getDefault().post(new SW_DeviceCodeBean(item1.getDevCode(), address));
+                            activity.finish();
+                        }
+                    });
+                }else {
+                    cb_name1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            boolean checked = cb_name1.isChecked();
+                            if (checked) {
+                                rv1.setVisibility(View.VISIBLE);
+                            } else {
+                                rv1.setVisibility(View.GONE);
+                            }
+
+
+                        }
+                    });
+                }
                 rv1.setLayoutManager(new LinearLayoutManager(activity));
                 rv1.setAdapter(new BaseQuickAdapter<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX, BaseViewHolder>(R.layout.sw_view_textview, item1.getChildren()) {
 
@@ -106,17 +133,6 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.D
                             }
                         });
 
-                    }
-                });
-                cb_name1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        boolean checked = cb_name1.isChecked();
-                        if (checked) {
-                            rv1.setVisibility(View.VISIBLE);
-                        } else {
-                            rv1.setVisibility(View.GONE);
-                        }
                     }
                 });
 

@@ -54,6 +54,7 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
         LogUtils.e(""+num.getNum());
     }
 
+
     @Override
     protected void convert(BaseViewHolder helper, final SW_HistoryWarnBean.DataBean item) {
 

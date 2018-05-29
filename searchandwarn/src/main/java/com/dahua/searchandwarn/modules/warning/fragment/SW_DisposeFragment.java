@@ -149,7 +149,6 @@ public class SW_DisposeFragment extends Fragment {
                                     disposeData.add(datas.get(i));
                                 }
                             }
-                            LogUtils.e(disposeData.size()+"");
                             disposeAdapter = new SW_DisposeAdapter(getActivity(), R.layout.sw_item_dispose, disposeData);
                             rv.setLayoutManager(linearLayoutManager);
                             if (disposeData == null || disposeData.size() == 0) {

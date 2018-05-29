@@ -25,16 +25,18 @@
 
 
             <ImageView
+                android:scaleType="fitXY"
                 android:id="@+id/iv_small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 android:layout_margin="20dp"
                 android:src="@drawable/test1" />
 
             <ImageView
+                android:scaleType="fitXY"
                 android:id="@+id/iv_big"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:src="@drawable/test1" />
@@ -69,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -85,7 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/tvRed"
+                    android:textColor="@color/tvColorOne"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -94,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -110,7 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/tvRed"
+                    android:textColor="@color/tvColorOne"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -135,7 +137,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/tvRed"
+                    android:textColor="@color/tvColorOne"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -160,7 +162,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/tvRed"
+                    android:textColor="@color/tvColorOne"
                     android:textSize="15sp" />
             </LinearLayout>
         </LinearLayout>

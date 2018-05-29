@@ -143,20 +143,24 @@ public class SW_TreeActivity extends AppCompatActivity {
                                         List<SW_AddressTreeBean.DataBean.ChildrenBeanXX> qus = citys.get(i).getChildren();
                                         for (int j = 0; j < qus.size(); j++) {
                                             List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX> jies = qus.get(j).getChildren();
-                                            for (int k = 0; k < jies.size(); k++) {
-                                                List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX.ChildrenBean> ads = jies.get(k).getChildren();
-                                                if (!TextUtils.isEmpty(jies.get(k).getDevName())) {
-                                                    address = citys.get(i).getOrgName() + qus.get(j).getOrgName() + jies.get(k).getDevName();
-                                                    sqlietModel.insertAddress(address, jies.get(k).getDevCode());
-                                                }
-                                                if (ads != null) {
-                                                    for (int l = 0; l < ads.size(); l++) {
-                                                        address = citys.get(i).getOrgName() + qus.get(j).getOrgName() + jies.get(k).getOrgName() + ads.get(l).getDevName();
-                                                        sqlietModel.insertAddress(address, ads.get(l).getDevCode());
+                                            if (!TextUtils.isEmpty(qus.get(j).getDevName())) {
+                                                address = citys.get(i).getOrgName() + qus.get(j).getDevName();
+                                                sqlietModel.insertAddress(address, qus.get(j).getDevCode());
+                                            }
+                                            if (jies != null) {
+                                                for (int k = 0; k < jies.size(); k++) {
+                                                    List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX.ChildrenBean> ads = jies.get(k).getChildren();
+                                                    if (!TextUtils.isEmpty(jies.get(k).getDevName())) {
+                                                        address = citys.get(i).getOrgName() + qus.get(j).getOrgName() + jies.get(k).getDevName();
+                                                        sqlietModel.insertAddress(address, jies.get(k).getDevCode());
+                                                    }
+                                                    if (ads != null) {
+                                                        for (int l = 0; l < ads.size(); l++) {
+                                                            address = citys.get(i).getOrgName() + qus.get(j).getOrgName() + jies.get(k).getOrgName() + ads.get(l).getDevName();
+                                                            sqlietModel.insertAddress(address, ads.get(l).getDevCode());
+                                                        }
                                                     }
                                                 }
-
-
                                             }
                                         }
                                     }

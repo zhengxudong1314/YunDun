@@ -20,8 +20,9 @@ import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.base.SqlietModel;
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
+import com.dahua.searchandwarn.model.SW_NewMessageBean;
+import com.dahua.searchandwarn.model.SW_TypeBean;
 import com.dahua.searchandwarn.model.SW_UserLoginBean;
-import com.dahua.searchandwarn.model.TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 
@@ -205,13 +206,22 @@ public class SW_UndisposeFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onMoon(TypeBean typeBean) {
-        if (typeBean.getPosition()!="false"){
-            int p = Integer.valueOf(typeBean.getPosition());
+    public void onMoon(SW_TypeBean SWTypeBean) {
+        if (SWTypeBean.getPosition()!="false"){
+            int p = Integer.valueOf(SWTypeBean.getPosition());
             EventBus.getDefault().postSticky(undisposeData.get(p));
             undisposeData.remove(p);
             undisposeAdapter.notifyDataSetChanged();
         }
     }
 
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onNewMessage(SW_NewMessageBean newMessageBean) {
+        if (newMessageBean.getNewMessage()==0){
+            undisposeData.clear();
+            pageNum=1;
+            getNetData();
+        }
+    }
 }

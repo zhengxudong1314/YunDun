@@ -23,6 +23,7 @@ import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.KeyboardUtils;
 import com.dahua.searchandwarn.utils.ToastUtils;
+import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -95,7 +96,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                             tvLoadingError.setVisibility(View.GONE);
                             LoadingDialogUtils.dismiss();
                             datas = sw_singleWarnBean.getData();
-                            tvSimilarity.setText(datas.getSimilarity() + "%");
+                            tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
                             tvCaptureTime.setText(datas.getShortTime());
                             tvId.setText(datas.getDeviceCode());
                             if (datas.getParentPusher().equals("-1")) {

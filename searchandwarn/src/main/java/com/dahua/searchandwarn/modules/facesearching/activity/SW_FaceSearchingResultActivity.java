@@ -21,6 +21,7 @@ import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.LogUtils;
+import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -144,8 +145,8 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
 
             @Override
             protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
-                helper.setText(R.id.tv_time, item.getSimilarity())
-                        .setText(R.id.tv_similarity, item.getFaceTime())
+                helper.setText(R.id.tv_time, item.getFaceTime())
+                        .setText(R.id.tv_similarity, TwoPointUtils.doubleToString(Double.valueOf(item.getSimilarity()))+"%")
                         .setText(R.id.tv_site, item.getSex());
                 ImageView ivImg = helper.getView(R.id.iv_img);
                 Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
@@ -167,7 +168,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
 
             @Override
             protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
-                helper.setText(R.id.tv_time, item.getSimilarity())
+                helper.setText(R.id.tv_time, item.getFaceTime())
                         .setText(R.id.tv_site, item.getSex());
                 ImageView iv_small = helper.getView(R.id.iv_small);
                 ImageView iv_big = helper.getView(R.id.iv_big);
@@ -223,7 +224,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                                     @Override
                                     protected void convert(BaseViewHolder helper, SW_StaticBean.DataBean item) {
                                         helper.setText(R.id.tv_time, item.getName())
-                                                .setText(R.id.tv_similarity, item.getSimilarity() + "%")
+                                                .setText(R.id.tv_similarity, TwoPointUtils.doubleToString(item.getSimilarity()) + "%")
                                                 .setText(R.id.tv_id, item.getCardNum())
                                                 .setText(R.id.tv_type, item.getLibName());
 
@@ -289,4 +290,6 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
             ivTu.setImageResource(R.drawable.sw_icon_img);
         }
     }
+
+
 }

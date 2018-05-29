@@ -6,12 +6,12 @@ package com.dahua.searchandwarn.model;
  * 日期：2018/5/22
  */
 
-public class TypeBean {
+public class SW_TypeBean {
     private String errer;
 
     private String position;
 
-    public TypeBean(String position) {
+    public SW_TypeBean(String position) {
         this.position = position;
     }
 

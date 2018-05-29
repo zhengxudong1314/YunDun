@@ -11,6 +11,7 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 
+import com.dahua.searchandwarn.base.MqttUtils;
 import com.dahua.searchandwarn.base.UnReadService;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
 import com.dahua.searchandwarn.modules.facesearching.activity.SW_FaceSearchingActivity;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //start();
-       // MqttUtils.connectMqtt(this);
+        MqttUtils.connectMqtt(this);
 
     }
 
