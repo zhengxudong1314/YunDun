@@ -213,7 +213,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
         } else if (i == R.id.tv_sure) {
             suggestion = etReason.getText().toString().trim();
             if (TextUtils.isEmpty(suggestion)) {
-                ToastUtils.showShort("请填写忽略原因");
+                ToastUtils.showShort("请填写处理意见");
             } else {
                 LoadingDialogUtils.show(this);
                 getDisposeData();

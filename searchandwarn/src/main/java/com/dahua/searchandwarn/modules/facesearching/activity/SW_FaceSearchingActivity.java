@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
@@ -187,7 +188,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                 sw_faceParams.setImageBase64(imgUrl);
             }
             sw_faceParams.setSimilarity(similarity);
-            sw_faceParams.setOperator("xzm");
+            sw_faceParams.setOperator(SW_UserLoginBean.USERNANE);
             EventBus.getDefault().postSticky(sw_faceParams);
             startActivity(intent);
         }
@@ -263,7 +264,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                             FileOutputStream os = new FileOutputStream(endPath);
 
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 40, os);
-                            ivFace.setImageBitmap(bitmap);
+                            Glide.with(SW_FaceSearchingActivity.this).load(file).into(ivFace);
                             getPic(endPath);
                         } catch (Exception ex) {
                         }

@@ -52,27 +52,19 @@
             android:text="浙江省杭州市西湖区武林广场地铁站4A出口"
             android:textColor="@color/tvColorTwo" />
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/iv_small"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitXY" />
+        <View
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:id="@+id/iv_small"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp" />
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:id="@+id/iv_big"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp" />
-
-        </LinearLayout>
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/tvColorTwo" />
     </LinearLayout>
+
 </LinearLayout>

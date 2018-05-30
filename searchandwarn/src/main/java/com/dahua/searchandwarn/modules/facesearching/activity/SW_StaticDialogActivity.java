@@ -34,9 +34,7 @@ public class SW_StaticDialogActivity extends AppCompatActivity {
         tvSimilarity.setText(TwoPointUtils.doubleToString(Double.valueOf(datas.getSimilarity())) + "%");
         tvName.setText(datas.getName());
         tvCardId.setText(datas.getCardNum());
-        tvKuId.setText(datas.getLibId());
         tvKuName.setText(datas.getLibName());
-        tvPersonId.setText(datas.getPeopleId());
         Glide.with(this).load(datas.getFace()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,9 +51,8 @@ public class SW_StaticDialogActivity extends AppCompatActivity {
         tvName = (TextView) findViewById(R.id.tv_name);
         tvSimilarity = (TextView) findViewById(R.id.tv_similarity);
         tvKuName = (TextView) findViewById(R.id.tv_kuname);
-        tvKuId = (TextView) findViewById(R.id.tv_kuid);
         tvCardId = (TextView) findViewById(R.id.tv_cardId);
-        tvPersonId = (TextView) findViewById(R.id.tv_personid);
 
     }
+
 }

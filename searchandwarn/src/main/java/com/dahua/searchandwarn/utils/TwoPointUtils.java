@@ -1,6 +1,7 @@
 package com.dahua.searchandwarn.utils;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * 作用：
@@ -16,6 +17,10 @@ public class TwoPointUtils {
      */
     public static String doubleToString(double num){
         //使用0.00不足位补0，#.##仅保留有效位
-        return new DecimalFormat("0.00").format(num);
+        BigDecimal bd = new BigDecimal(num);
+        BigDecimal bigDecimal = bd.setScale(2, RoundingMode.DOWN);
+
+        return bigDecimal.toString();
+        //return String.format("%.2f",num-0.005);
     }
 }

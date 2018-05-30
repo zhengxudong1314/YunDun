@@ -57,7 +57,11 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
 
     @Override
     protected void convert(BaseViewHolder helper, final SW_HistoryWarnBean.DataBean item) {
-
+        if (item.getStatus().equals("处理中")){
+            LinearLayout tv_ignore = helper.getView(R.id.tv_ignore);
+            tv_ignore.setVisibility(View.INVISIBLE);
+            tv_ignore.setFocusable(false);
+        }
         final ImageView iv_type = helper.getView(R.id.iv_type);
         int flag = 0;
         if (list != null && list.size() != 0) {
@@ -154,8 +158,8 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 intent = new Intent();
                 intent.setComponent(new ComponentName("com.mm.dss.map", "com.mm.dss.map.BaiduMapActivity"));
-                intent.putExtra("longitude", 116.222);//经度
-                intent.putExtra("latitued", 83.222);//纬度
+                intent.putExtra("longitude", item.getDeviceX());//经度
+                intent.putExtra("latitued", item.getDeviceY());//纬度
                 intent.putExtra("name", "dahua");
                 context.startActivity(intent);
                 notifyDataSetChanged();

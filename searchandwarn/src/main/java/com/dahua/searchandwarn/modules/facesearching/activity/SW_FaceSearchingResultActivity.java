@@ -27,6 +27,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +169,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     }
 
     private void changeRvZhou() {
+        Collections.sort(data,new DateComparator());
         BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_time_line_style, data) {
 
             @Override
@@ -171,9 +177,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                 helper.setText(R.id.tv_time, item.getFaceTime())
                         .setText(R.id.tv_site, item.getSex());
                 ImageView iv_small = helper.getView(R.id.iv_small);
-                ImageView iv_big = helper.getView(R.id.iv_big);
                 Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_small);
-                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image2()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_big);
             }
         };
         rvDynamic.setAdapter(dynamicAdapter);
@@ -291,5 +295,24 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         }
     }
 
+    private static class DateComparator implements Comparator<SW_DynamicBean.DataBean> {
 
+
+        @Override
+        public int compare(SW_DynamicBean.DataBean dataBean, SW_DynamicBean.DataBean t1) {
+            Date date1 = stringToDate(dataBean.getFaceTime());
+            Date date2 = stringToDate(t1.getFaceTime());
+            // 对日期字段进行升序，如果欲降序可采用after方法
+            if (date1.after(date2)) {
+                return 1;
+            }
+            return -1;
+        }
+    }
+    public static Date stringToDate(String dateString) {
+        ParsePosition position = new ParsePosition(0);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateValue = simpleDateFormat.parse(dateString, position);
+        return dateValue;
+    }
 }

@@ -29,16 +29,16 @@
         android:layout_width="match_parent"
         android:layout_height="100dp" />
     <android.support.v7.widget.RecyclerView
+        android:layout_weight="1"
         android:id="@+id/rv_static"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:layout_marginTop="10dp"
         android:background="@color/tvBlue"
         android:gravity="center_vertical"
         android:textColor="@color/colorWhite">
@@ -79,9 +79,10 @@
         android:layout_width="match_parent"
         android:layout_height="100dp" />
     <android.support.v7.widget.RecyclerView
+        android:layout_weight="1"
         android:id="@+id/rv_dynamic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 </LinearLayout>

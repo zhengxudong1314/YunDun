@@ -15,7 +15,6 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_AddressTreeBean;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
-import com.dahua.searchandwarn.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
