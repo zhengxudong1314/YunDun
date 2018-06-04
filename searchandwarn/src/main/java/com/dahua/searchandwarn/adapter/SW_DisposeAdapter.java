@@ -52,7 +52,7 @@ public class SW_DisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.DataB
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.mm.dss.map", "com.mm.dss.map.BaiduMapActivity"));
+                intent.setComponent(new ComponentName("com.mm.dss", "com.mm.dss.map.BaiduMapActivity"));
                 intent.putExtra("longitude", bean.getDeviceX());//经度
                 intent.putExtra("latitued", bean.getDeviceY());//纬度
                 intent.putExtra("name", "dahua");

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.telephony.TelephonyManager;
 
 import com.dahua.searchandwarn.model.SW_NewMessageBean;
+import com.dahua.searchandwarn.model.SW_UnReadNum;
 import com.dahua.searchandwarn.modules.warning.activity.SW_WarningAccpetActivity;
 import com.dahua.searchandwarn.utils.LogUtils;
 import com.google.gson.Gson;
@@ -21,6 +22,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttTopic;
 import org.eclipse.paho.client.mqttv3.internal.MemoryPersistence;
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * 作用：
@@ -37,7 +40,17 @@ public class MqttUtils {
     private static String passWord = "admin";
     private static MqttClient client;
     private static MqttConnectOptions options;
-    public static void connectMqtt(final Context context){
+    private int num;
+
+    public MqttUtils() {
+        EventBus.getDefault().register(this);
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
+    public void onMood(SW_UnReadNum num){
+        this.num = num.getNum();
+    }
+    public void connectMqtt(final Context context){
+
         try {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             clientid = telephonyManager.getDeviceId();
@@ -83,7 +96,7 @@ public class MqttUtils {
                             @Override
                             public void messageArrived(MqttTopic mqttTopic, MqttMessage mqttMessage) throws Exception {
 
-
+                                num++;
 //                                ToastUtils.showLong(mqttMessage.getPayload().toString());
                                 LogUtils.e("接收消息主题 :"+mqttTopic.getName());
                                 LogUtils.e("接收消息Qos  :"+mqttMessage.getQos());
@@ -96,6 +109,7 @@ public class MqttUtils {
                                 SW_NewMessageBean newMessageBean = new SW_NewMessageBean();
                                 sw_newMessageBean.setNewMessage(0);
                                 EventBus.getDefault().postSticky(newMessageBean);
+                                EventBus.getDefault().postSticky(new SW_UnReadNum(num));
                             }
 
                             @Override

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -157,6 +156,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                             LoadingDialogUtils.dismiss();
                             finish();
                         } else {
+                            ToastUtils.showLong(sw_ignoreBean.getMessage());
                             EventBus.getDefault().postSticky("false");
                             finish();
                         }
@@ -232,27 +232,24 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
             startActivity(new Intent(SW_IgnoreActivity.this.getApplicationContext(), SW_SearchActivity.class));
         } else if (i == R.id.iv_one) {
             //抓拍图片
-            intent.putExtra("imgUrl",datas.getSmallImg());
+            intent.putExtra("imgUrl", datas.getSmallImg());
             startActivity(intent);
         } else if (i == R.id.iv_two) {
             //图库图片
-            intent.putExtra("imgUrl",datas.getOriginalImg());
+            intent.putExtra("imgUrl", datas.getOriginalImg());
             startActivity(intent);
         } else if (i == R.id.iv_three) {
             //选择大图
-            intent.putExtra("imgUrl",datas.getBigImg());
+            intent.putExtra("imgUrl", datas.getBigImg());
             startActivity(intent);
         } else if (i == R.id.tv_cacle) {
             KeyboardUtils.hideSoftInput(SW_IgnoreActivity.this);
             finish();
         } else if (i == R.id.tv_sure) {
             ignoreMsg = etReason.getText().toString().trim();
-            if (TextUtils.isEmpty(ignoreMsg)) {
-                ToastUtils.showShort("请填写忽略原因");
-            } else {
-                LoadingDialogUtils.show(this);
-                getNetData();
-            }
+            LoadingDialogUtils.show(this);
+            getNetData();
+
 
         }
     }

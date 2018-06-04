@@ -8,6 +8,8 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import com.dahua.searchandwarn.net.SW_RestfulClient;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.ObservableSource;
@@ -40,12 +43,16 @@ public class SW_TreeActivity extends AppCompatActivity {
     private RecyclerView rv;
     private RecyclerView rvEt;
     private CompositeDisposable compositeDisposable;
-    private SW_AddressTreeAdapter sw_addressTreeAdapter;
     private SqlietModel sqlietModel;
     private ImageView ivBack;
     private EditText etSearch;
     private List<SW_DeviceCodeBean> addresses;
-    private String address;
+    private boolean onBind;
+    private TextView tvSure;
+    private StringBuffer endAddress;
+    private StringBuffer endCode;
+    private List<SW_AddressTreeBean.BaseInfo> baseInfos;
+    private List<SW_AddressTreeBean.BaseInfo> allBaseInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +63,14 @@ public class SW_TreeActivity extends AppCompatActivity {
         rv = (RecyclerView) findViewById(R.id.rv);
         rvEt = (RecyclerView) findViewById(R.id.rv_et);
         ivBack = (ImageView) findViewById(R.id.iv_back);
+        tvSure = (TextView) findViewById(R.id.tv_sure);
         etSearch = (EditText) findViewById(R.id.et_search);
+        allBaseInfos = new ArrayList<>();
+        endAddress = new StringBuffer();
+        endCode = new StringBuffer();
+        rv.setLayoutManager(new LinearLayoutManager(this));
         rvEt.setLayoutManager(new LinearLayoutManager(this));
+
         getNetData();
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +78,50 @@ public class SW_TreeActivity extends AppCompatActivity {
                 finish();
             }
         });
+        tvSure.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (addresses != null) {
+                    for (int i = 0; i < addresses.size(); i++) {
+                        if (addresses.get(i).isChecked()) {
+                            endAddress.append(",");
+                            endAddress.append(addresses.get(i).getAddress());
+                            endCode.append(",");
+                            endCode.append(addresses.get(i).getDevCode());
+                        }
+                    }
+                }
+
+                if (allBaseInfos != null) {
+                    for (SW_AddressTreeBean.BaseInfo bos : allBaseInfos) {
+                        if (bos.isChecked() && !TextUtils.isEmpty(bos.getDevName())) {
+                            endAddress.append(",");
+                            endAddress.append(bos.getDevName());
+                            endCode.append(",");
+                            endCode.append(bos.getDevCode());
+                        }
+                    }
+                }
+                String subAddress = null;
+                String subCode = null;
+                if (endAddress.length() > 0 && endAddress != null) {
+                    subAddress = endAddress.substring(1);
+                }
+
+                if (endCode.length() > 0 && endCode != null) {
+                    subCode = endCode.substring(1);
+                }
+                SW_DeviceCodeBean deviceCodeBean = new SW_DeviceCodeBean();
+                deviceCodeBean.setDevCode(subCode);
+                deviceCodeBean.setAddress(subAddress);
+                EventBus.getDefault().postSticky(deviceCodeBean);
+                finish();
+            }
+        });
+        searchChange();
+    }
+
+    private void searchChange() {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -87,16 +144,22 @@ public class SW_TreeActivity extends AppCompatActivity {
                 rvEt.setAdapter(new BaseQuickAdapter<SW_DeviceCodeBean, BaseViewHolder>(R.layout.sw_view_textview_item, addresses) {
 
                     @Override
-                    protected void convert(BaseViewHolder helper, SW_DeviceCodeBean item) {
-                        final String devCode = item.getDevCode();
-                        final String address = item.getAddress();
-                        helper.setText(R.id.tv_name, item.getAddress());
-                        TextView tv_name = helper.getView(R.id.tv_name);
-                        tv_name.setOnClickListener(new View.OnClickListener() {
+                    protected void convert(BaseViewHolder helper, final SW_DeviceCodeBean item) {
+                        onBind = true;
+                        helper.setText(R.id.cb_name, item.getAddress()).setChecked(R.id.cb_name, item.isChecked());
+                        CheckBox cb_name = helper.getView(R.id.cb_name);
+                        onBind = false;
+                        cb_name.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                             @Override
-                            public void onClick(View view) {
-                                EventBus.getDefault().post(new SW_DeviceCodeBean(devCode, address));
-                                finish();
+                            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                if (!onBind) {
+                                    if (b) {
+                                        item.setChecked(true);
+                                    } else {
+                                        item.setChecked(false);
+                                    }
+                                    notifyDataSetChanged();
+                                }
                             }
                         });
                     }
@@ -104,6 +167,20 @@ public class SW_TreeActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void filter(SW_AddressTreeBean.BaseInfo bean) {
+        if (bean.getChildren() != null) {
+            for (SW_AddressTreeBean.BaseInfo baseInfo : bean.getChildren()) {
+                allBaseInfos.add(baseInfo);
+                baseInfo.setOrg_id(bean.getOrgCode());
+                if (!TextUtils.isEmpty(baseInfo.getDevName())) {
+                    sqlietModel.insertAddress(baseInfo.getDevName(), baseInfo.getDevCode());
+                }
+
+                filter(baseInfo);
+            }
+        }
     }
 
     private void getNetData() {
@@ -127,48 +204,13 @@ public class SW_TreeActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(final SW_AddressTreeBean sw_addressTreeBean) {
+                    public void onNext(SW_AddressTreeBean sw_addressTreeBean) {
+                        baseInfos = sw_addressTreeBean.getData();
+                        SW_AddressTreeAdapter treeAdapter = new SW_AddressTreeAdapter(SW_TreeActivity.this, R.layout.sw_item_address_tree, baseInfos);
+                        rv.setAdapter(treeAdapter);
 
-                        if (sw_addressTreeBean.getRetCode() == 0) {
-
-                            rv.setLayoutManager(new LinearLayoutManager(SW_TreeActivity.this));
-                            List<SW_AddressTreeBean.DataBean> data = sw_addressTreeBean.getData();
-
-                            final List<SW_AddressTreeBean.DataBean> citys = sw_addressTreeBean.getData();
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    for (int i = 0; i < citys.size(); i++) {
-                                        List<SW_AddressTreeBean.DataBean.ChildrenBeanXX> qus = citys.get(i).getChildren();
-                                        for (int j = 0; j < qus.size(); j++) {
-                                            List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX> jies = qus.get(j).getChildren();
-                                            if (!TextUtils.isEmpty(qus.get(j).getDevName())) {
-                                                address = citys.get(i).getOrgName() + qus.get(j).getDevName();
-                                                sqlietModel.insertAddress(address, qus.get(j).getDevCode());
-                                            }
-                                            if (jies != null) {
-                                                for (int k = 0; k < jies.size(); k++) {
-                                                    List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX.ChildrenBean> ads = jies.get(k).getChildren();
-                                                    if (!TextUtils.isEmpty(jies.get(k).getDevName())) {
-                                                        address = citys.get(i).getOrgName() + qus.get(j).getOrgName() + jies.get(k).getDevName();
-                                                        sqlietModel.insertAddress(address, jies.get(k).getDevCode());
-                                                    }
-                                                    if (ads != null) {
-                                                        for (int l = 0; l < ads.size(); l++) {
-                                                            address = citys.get(i).getOrgName() + qus.get(j).getOrgName() + jies.get(k).getOrgName() + ads.get(l).getDevName();
-                                                            sqlietModel.insertAddress(address, ads.get(l).getDevCode());
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }).start();
-
-                            sw_addressTreeAdapter = new SW_AddressTreeAdapter(SW_TreeActivity.this, R.layout.sw_view_textview, citys);
-                            rv.setAdapter(sw_addressTreeAdapter);
+                        for (SW_AddressTreeBean.BaseInfo info : baseInfos) {
+                            filter(info);
                         }
                     }
 
@@ -184,6 +226,7 @@ public class SW_TreeActivity extends AppCompatActivity {
                 });
 
     }
+
 
     @Override
     protected void onDestroy() {

@@ -20,8 +20,9 @@
             android:src="@drawable/sw_icon_back" />
 
         <EditText
+            android:layout_weight="1"
             android:id="@+id/et_search"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/border_radius_gray_big"
@@ -31,6 +32,12 @@
             android:paddingLeft="10dp"
             android:textColorHint="@color/tvColorTwo"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/tv_sure"
+            android:gravity="center"
+            android:text="@string/confirm"
+            android:layout_width="50dp"
+            android:layout_height="30dp" />
     </LinearLayout>
 
     <View

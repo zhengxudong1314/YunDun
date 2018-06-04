@@ -21,9 +21,7 @@
         <activity android:name=".TestActivity">
 
         </activity>
-        <service android:name="com.dahua.searchandwarn.base.UnReadService">
 
-        </service>
     </application>
 
 </manifest>

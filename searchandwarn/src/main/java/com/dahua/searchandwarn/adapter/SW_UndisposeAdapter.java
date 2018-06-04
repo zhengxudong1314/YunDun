@@ -157,7 +157,7 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 sqlietModel.insertData(item.getAlarmId());
                 list = sqlietModel.queryAll();
                 intent = new Intent();
-                intent.setComponent(new ComponentName("com.mm.dss.map", "com.mm.dss.map.BaiduMapActivity"));
+                intent.setComponent(new ComponentName("com.mm.dss", "com.mm.dss.map.BaiduMapActivity"));
                 intent.putExtra("longitude", item.getDeviceX());//经度
                 intent.putExtra("latitued", item.getDeviceY());//纬度
                 intent.putExtra("name", "dahua");

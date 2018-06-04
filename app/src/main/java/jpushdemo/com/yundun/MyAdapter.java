@@ -1,4 +1,4 @@
-package com.dahua.searchandwarn.adapter;
+package jpushdemo.com.yundun;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_AddressTreeBean;
 
 import java.util.ArrayList;
@@ -22,29 +21,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 创建： ZXD
- * 日期 2018/5/16
- * 功能：
+ * 作用：
+ * 作者： 郑旭东
+ * 日期：2018/6/1
  */
 
-public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.BaseInfo, BaseViewHolder> {
-
+public class MyAdapter extends BaseQuickAdapter<SW_AddressTreeBean.BaseInfo, BaseViewHolder> {
     private List<SW_AddressTreeBean.BaseInfo> baseInfos;
     private Context context;
     private Map<String, SW_AddressTreeBean.BaseInfo> map = new HashMap<>();
     private int mItemHeight;
     private boolean onBind;
 
-    public SW_AddressTreeAdapter(Context context, int layoutResId, @Nullable List<SW_AddressTreeBean.BaseInfo> data) {
+    public MyAdapter(Context context, int layoutResId, @Nullable List<SW_AddressTreeBean.BaseInfo> data) {
         super(layoutResId, data);
         this.baseInfos = data;
         this.context = context;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, final SW_AddressTreeBean.BaseInfo item) {
+    protected void convert(final BaseViewHolder helper, final SW_AddressTreeBean.BaseInfo item) {
         onBind = true;
-        //filter(item);
         final int position = helper.getAdapterPosition();
         View rootView = helper.getView(R.id.ll);
         ViewGroup.LayoutParams params = rootView.getLayoutParams();
@@ -113,36 +110,20 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.B
                 notifyDataSetChanged();
             }
         });
-
-
         onBind = false;
-
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
                 if (!onBind) {
-                    item.setChecked(b);
+
                     isChecked(b, item);
+                    item.setChecked(b);
                     notifyDataSetChanged();
                 }
+
             }
         });
-    }
 
-    private void filter(SW_AddressTreeBean.BaseInfo item) {
-
-        if (item.getChildren()!=null){
-            for (int i = 0; i < item.getChildren().size(); i++) {
-                if (item.getChildren().get(i).isChecked()){
-                    item.setChecked(true);
-                }else {
-                    item.setChecked(false);
-                    break;
-                }
-                filter(item.getChildren().get(i));
-            }
-        }
     }
 
     private void isChecked(boolean b, SW_AddressTreeBean.BaseInfo item) {
@@ -150,17 +131,18 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.B
             if (item.getChildren() != null) {
                 for (int i = 0; i < item.getChildren().size(); i++) {
                     item.getChildren().get(i).setChecked(true);
-                    isChecked(item.getChildren().get(i).isChecked(), item.getChildren().get(i));
+                    isChecked(item.getChildren().get(i).isChecked(),item.getChildren().get(i));
                 }
             }
         } else {
             if (item.getChildren() != null) {
                 for (int i = 0; i < item.getChildren().size(); i++) {
                     item.getChildren().get(i).setChecked(false);
-                    isChecked(item.getChildren().get(i).isChecked(), item.getChildren().get(i));
+                    isChecked(item.getChildren().get(i).isChecked(),item.getChildren().get(i));
                 }
             }
         }
 
     }
+
 }

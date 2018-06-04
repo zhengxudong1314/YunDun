@@ -9,10 +9,9 @@ import java.util.List;
  */
 
 public class SW_AddressTreeBean {
-
     private int retCode;
     private String message;
-    private List<DataBean> data;
+    private List<BaseInfo> data;
 
     public int getRetCode() {
         return retCode;
@@ -30,27 +29,49 @@ public class SW_AddressTreeBean {
         this.message = message;
     }
 
-    public List<DataBean> getData() {
+    public List<BaseInfo> getData() {
         return data;
     }
 
-    public void setData(List<DataBean> data) {
+    public void setData(List<BaseInfo> data) {
         this.data = data;
     }
 
-    public static class DataBean {
+    @Override
+    public String toString() {
+        return "SW_AddressTreeBean{" +
+                "retCode=" + retCode +
+                ", message='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
 
-
-        private String orgName;
+    public static class BaseInfo {
         private String orgCode;
-        private List<ChildrenBeanXX> children;
+        private String orgName;
+        private String devCode;
+        private String devName;
+        private String org_id;
+        private List<BaseInfo> children;
+        private boolean isExpended = false;
+        private int level = 0;
+        private boolean isEmptyNode = false;
+        private boolean isChecked = false;
 
-        public String getOrgName() {
-            return orgName;
+        public boolean isChecked() {
+            return isChecked;
         }
 
-        public void setOrgName(String orgName) {
-            this.orgName = orgName;
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+        }
+
+        public boolean isEmptyNode() {
+            return isEmptyNode;
+        }
+
+        public void setEmptyNode(boolean emptyNode) {
+            isEmptyNode = emptyNode;
         }
 
         public String getOrgCode() {
@@ -61,176 +82,74 @@ public class SW_AddressTreeBean {
             this.orgCode = orgCode;
         }
 
-        public List<ChildrenBeanXX> getChildren() {
+        public String getOrgName() {
+            return orgName;
+        }
+
+        public void setOrgName(String orgName) {
+            this.orgName = orgName;
+        }
+
+        public String getDevCode() {
+            return devCode;
+        }
+
+        public void setDevCode(String devCode) {
+            this.devCode = devCode;
+        }
+
+        public String getDevName() {
+            return devName;
+        }
+
+        public void setDevName(String devName) {
+            this.devName = devName;
+        }
+
+        public String getOrg_id() {
+            return org_id;
+        }
+
+        public void setOrg_id(String org_id) {
+            this.org_id = org_id;
+        }
+
+        public List<BaseInfo> getChildren() {
             return children;
         }
 
-        public void setChildren(List<ChildrenBeanXX> children) {
+        public void setChildren(List<BaseInfo> children) {
             this.children = children;
         }
 
-        public static class ChildrenBeanXX {
+        public boolean isExpended() {
+            return isExpended;
+        }
 
+        public void setExpended(boolean expended) {
+            isExpended = expended;
+        }
 
-            private String orgName;
-            private String orgCode;
-            private List<ChildrenBeanX> children;
-            private String devCode;
-            private String devName;
+        public int getLevel() {
+            return level;
+        }
 
-            public String getDevCode() {
-                return devCode;
-            }
+        public void setLevel(int level) {
+            this.level = level;
+        }
 
-            public void setDevCode(String devCode) {
-                this.devCode = devCode;
-            }
-
-            public String getDevName() {
-                return devName;
-            }
-
-            public void setDevName(String devName) {
-                this.devName = devName;
-            }
-
-            public String getOrgName() {
-                return orgName;
-            }
-
-            public void setOrgName(String orgName) {
-                this.orgName = orgName;
-            }
-
-            public String getOrgCode() {
-                return orgCode;
-            }
-
-            public void setOrgCode(String orgCode) {
-                this.orgCode = orgCode;
-            }
-
-            public List<ChildrenBeanX> getChildren() {
-                return children;
-            }
-
-            public void setChildren(List<ChildrenBeanX> children) {
-                this.children = children;
-            }
-
-            public static class ChildrenBeanX {
-
-                private String orgName;
-                private String orgCode;
-                private String devCode;
-                private String devName;
-                private List<ChildrenBean> children;
-
-                public String getDevCode() {
-                    return devCode;
-                }
-
-                public void setDevCode(String devCode) {
-                    this.devCode = devCode;
-                }
-
-                public String getDevName() {
-                    return devName;
-                }
-
-                public void setDevName(String devName) {
-                    this.devName = devName;
-                }
-
-                public String getOrgName() {
-                    return orgName;
-                }
-
-                public void setOrgName(String orgName) {
-                    this.orgName = orgName;
-                }
-
-                public String getOrgCode() {
-                    return orgCode;
-                }
-
-                public void setOrgCode(String orgCode) {
-                    this.orgCode = orgCode;
-                }
-
-                public List<ChildrenBean> getChildren() {
-                    return children;
-                }
-
-                public void setChildren(List<ChildrenBean> children) {
-                    this.children = children;
-                }
-
-                public static class ChildrenBean {
-                    /**
-                     * devCode : 5003187328781728174
-                     * org_id : 1001212
-                     * devY : 29.8137682617
-                     * devName : 复兴所控单元门市马路对面墙壁
-                     * devX : 106.5599933267
-                     */
-
-                    private String devCode;
-                    private String org_id;
-                    private double devY;
-                    private String devName;
-                    private double devX;
-                    private String cbStr;
-
-                    public String getCbStr() {
-                        return cbStr;
-                    }
-
-                    public void setCbStr(String cbStr) {
-                        this.cbStr = cbStr;
-                    }
-
-                    public String getDevCode() {
-                        return devCode;
-                    }
-
-                    public void setDevCode(String devCode) {
-                        this.devCode = devCode;
-                    }
-
-                    public String getOrg_id() {
-                        return org_id;
-                    }
-
-                    public void setOrg_id(String org_id) {
-                        this.org_id = org_id;
-                    }
-
-                    public double getDevY() {
-                        return devY;
-                    }
-
-                    public void setDevY(double devY) {
-                        this.devY = devY;
-                    }
-
-                    public String getDevName() {
-                        return devName;
-                    }
-
-                    public void setDevName(String devName) {
-                        this.devName = devName;
-                    }
-
-                    public double getDevX() {
-                        return devX;
-                    }
-
-                    public void setDevX(double devX) {
-                        this.devX = devX;
-                    }
-                }
-            }
+        @Override
+        public String toString() {
+            return "BaseInfo{" +
+                    "orgCode='" + orgCode + '\'' +
+                    ", orgName='" + orgName + '\'' +
+                    ", devCode='" + devCode + '\'' +
+                    ", devName='" + devName + '\'' +
+                    ", org_id='" + org_id + '\'' +
+                    ", children=" + children +
+                    ", isExpended=" + isExpended +
+                    ", level=" + level +
+                    '}';
         }
     }
 }

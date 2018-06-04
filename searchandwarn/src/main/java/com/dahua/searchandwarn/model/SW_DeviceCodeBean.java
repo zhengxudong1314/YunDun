@@ -9,6 +9,15 @@ package com.dahua.searchandwarn.model;
 public class SW_DeviceCodeBean {
     private String devCode;
     private String address;
+    private boolean isChecked = false;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 
     public SW_DeviceCodeBean() {
     }

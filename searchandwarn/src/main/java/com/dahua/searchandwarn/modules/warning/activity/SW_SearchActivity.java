@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,8 +19,8 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.dahua.searchandwarn.R;
-import com.dahua.searchandwarn.model.SW_AddressTreeBean;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
+import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.TimeUtils;
 import com.lvfq.pickerview.DSSTimePickerView;
 
@@ -29,7 +30,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class SW_SearchActivity extends AppCompatActivity implements View.OnClickListener {
     private ImageView ivBack;
@@ -44,7 +44,7 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
     private EditText etCardId;
     private Intent intent;
 
-    private List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX.ChildrenBean> datas;
+    //private List<SW_AddressTreeBean.DataBean.ChildrenBeanXX.ChildrenBeanX.ChildrenBean> datas;
     private String site;
     private String state;
 
@@ -276,7 +276,12 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMood(SW_DeviceCodeBean bean) {
-        tvSite.setText(bean.getAddress());
+        LogUtils.e(bean.getAddress());
+        if (TextUtils.isEmpty(bean.getAddress())){
+            tvSite.setText(R.string.choose);
+        }else {
+            tvSite.setText(bean.getAddress());
+        }
         site = bean.getDevCode();
     }
 

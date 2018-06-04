@@ -26,6 +26,9 @@
         <activity android:name=".modules.facesearching.activity.SW_StaticDialogActivity" />
         <activity android:name=".modules.facesearching.activity.SW_DynamicDialogActivity" />
         <activity android:name=".modules.warning.activity.SW_TreeActivity"></activity>
+        <service android:name="com.dahua.searchandwarn.base.UnReadService">
+
+        </service>
     </application>
 
 </manifest>

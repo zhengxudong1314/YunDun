@@ -197,9 +197,12 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMood(SW_DeviceCodeBean bean) {
+        if (TextUtils.isEmpty(bean.getAddress())){
+            tvSite.setText(R.string.choose);
+        }else {
+            tvSite.setText(bean.getAddress());
+        }
         deviceCodes = bean.getDevCode();
-        String address = bean.getAddress();
-        tvSite.setText(address);
         LogUtils.e(deviceCodes);
     }
 
@@ -362,6 +365,17 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                                     Bitmap bitmap = decode(item.getSmallImgBase64());
                                     helper.setImageBitmap(R.id.iv_face, bitmap);
                                     final CheckBox cb = helper.getView(R.id.cb);
+                                    final ImageView iv_img = helper.getView(R.id.iv_face);
+                                    iv_img.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            if (cb.isChecked()){
+                                                cb.setChecked(false);
+                                            }else {
+                                                cb.setChecked(true);
+                                            }
+                                        }
+                                    });
                                     cb.setChecked(item.isChecked());
                                     onBind = false;
                                     cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -388,7 +402,6 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                                 }
                             });
                         }
-                        LogUtils.e("onNext");
                     }
 
                     @Override

@@ -127,7 +127,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                             rv.setNestedScrollingEnabled(false);
                             rv.setLayoutManager(new LinearLayoutManager(SW_DisposeDetailsActivity.this));
                             rv.setAdapter(new SW_LogAdapter(R.layout.sw_item_log, datas.getLoglist()));
-                        }else {
+                        } else {
                             LoadingDialogUtils.dismiss();
                             tvLoadingError.setText("加载失败");
                         }
@@ -198,15 +198,15 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
             startActivity(new Intent(SW_DisposeDetailsActivity.this.getApplicationContext(), SW_SearchActivity.class));
         } else if (i == R.id.iv_one) {
             //抓拍图片
-            intent.putExtra("imgUrl",datas.getSmallImg());
+            intent.putExtra("imgUrl", datas.getSmallImg());
             startActivity(intent);
         } else if (i == R.id.iv_two) {
             //图库图片
-            intent.putExtra("imgUrl",datas.getOriginalImg());
+            intent.putExtra("imgUrl", datas.getOriginalImg());
             startActivity(intent);
         } else if (i == R.id.iv_three) {
             //选择大图
-            intent.putExtra("imgUrl",datas.getBigImg());
+            intent.putExtra("imgUrl", datas.getBigImg());
             startActivity(intent);
         } else if (i == R.id.tv_cacle) {
             finish();
@@ -256,11 +256,12 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                     @Override
                     public void onNext(SW_DisposeBean sw_disposeBean) {
                         if (sw_disposeBean.getRetCode() == 0) {
-                            EventBus.getDefault().postSticky(new SW_TypeBean(position));
-                            ToastUtils.showLong("处理成功");
+                            if (resultType == 1) {
+                                EventBus.getDefault().postSticky(new SW_TypeBean(position));
+                            }
                             LoadingDialogUtils.dismiss();
                             finish();
-                        }else {
+                        } else {
                             LoadingDialogUtils.dismiss();
                             ToastUtils.showLong(sw_disposeBean.getMessage());
                         }

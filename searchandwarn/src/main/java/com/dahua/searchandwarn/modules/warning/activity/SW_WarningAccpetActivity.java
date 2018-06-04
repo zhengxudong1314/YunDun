@@ -18,7 +18,6 @@ import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.modules.warning.fragment.SW_DisposeFragment;
 import com.dahua.searchandwarn.modules.warning.fragment.SW_UndisposeFragment;
-import com.dahua.searchandwarn.utils.Utils;
 import com.dahua.searchandwarn.weight.SW_NoScrollViewPager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -48,7 +47,6 @@ public class SW_WarningAccpetActivity extends AppCompatActivity implements View.
             getSupportActionBar().hide();
         }*/
         setContentView(R.layout.sw_activity_warning_accpet);
-        Utils.init(this.getApplication());
         EventBus.getDefault().register(this);
         //初始化控件
         initView();
