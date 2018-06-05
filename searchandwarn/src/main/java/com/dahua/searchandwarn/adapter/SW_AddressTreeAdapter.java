@@ -126,6 +126,7 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.B
                     isChecked(b, item);
                     notifyDataSetChanged();
                 }
+
             }
         });
     }

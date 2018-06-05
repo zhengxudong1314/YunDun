@@ -25,6 +25,7 @@ import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
 import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
+import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -70,7 +71,18 @@ public class SW_TreeActivity extends AppCompatActivity {
         endCode = new StringBuffer();
         rv.setLayoutManager(new LinearLayoutManager(this));
         rvEt.setLayoutManager(new LinearLayoutManager(this));
+        //start
+        String s = "{\"data\":[{\"orgName\":\"重庆\",\"children\":[{\"orgName\":\"直辖市\",\"children\":[{\"orgName\":\"渝北区\",\"children\":[{\"orgName\":\"新牌坊派出所\",\"children\":[{\"orgName\":\"新牌坊社区\",\"orgCode\":\"5001120708\"},{\"orgName\":\"松树桥社区\",\"orgCode\":\"5001120710\"},{\"orgName\":\"花卉西路社区\",\"orgCode\":\"5001120711\"},{\"orgName\":\"花卉东路社区\",\"orgCode\":\"5001120713\"}],\"orgCode\":\"50011207\"}],\"orgCode\":\"500112\"},{\"orgName\":\"南岸区\",\"children\":[{\"orgName\":\"茶园\",\"orgCode\":\"50010817\"},{\"devCode\":\"500000000013109571103\",\"org_id\":\"502\",\"devName\":\"虚拟抓拍机2\"},{\"devCode\":\"500000000013109571102\",\"org_id\":\"503\",\"devName\":\"虚拟抓拍机3\"}],\"orgCode\":\"500108\"},{\"orgName\":\"九龙坡区\",\"orgCode\":\"500107\"},{\"orgName\":\"璧山区\",\"orgCode\":\"500120\"}],\"orgCode\":\"5001\"},{\"devCode\":\"500000000013109571101\",\"org_id\":\"501\",\"devName\":\"虚拟抓拍机1\"}],\"orgCode\":\"50\"}],\"retCode\":0,\"message\":\"请求成功\"}";
+        Gson gson = new Gson();
+        SW_AddressTreeBean addressTreeBean = gson.fromJson(s, SW_AddressTreeBean.class);
+        List<SW_AddressTreeBean.BaseInfo> data = addressTreeBean.getData();
+        SW_AddressTreeAdapter treeAdapter = new SW_AddressTreeAdapter(SW_TreeActivity.this, R.layout.sw_item_address_tree, data);
+        rv.setAdapter(treeAdapter);
 
+        for (SW_AddressTreeBean.BaseInfo info : data) {
+            filter(info);
+        }
+        //end
         getNetData();
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override

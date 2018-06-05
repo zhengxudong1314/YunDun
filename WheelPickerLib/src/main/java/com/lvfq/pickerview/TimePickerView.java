@@ -16,7 +16,7 @@ import java.util.Date;
 /**
  * Created by Sai on 15/11/22.
  */
-public class DSSTimePickerView extends BasePickerView implements View.OnClickListener {
+public class TimePickerView extends BasePickerView implements View.OnClickListener {
     public enum Type {
         ALL, YEAR_MONTH_DAY , YEAR_MONTH_DAY_HOUR , HOURS_MINS, MONTH_DAY_HOUR_MIN , YEAR_MONTH
     }// 选择模式，年月日时分，年月日，年月日时 , 时分，月日时分 ,年月
@@ -28,7 +28,7 @@ public class DSSTimePickerView extends BasePickerView implements View.OnClickLis
     private static final String TAG_CANCEL = "cancel";
     private OnTimeSelectListener timeSelectListener;
 
-    public DSSTimePickerView(Context context, Type type) {
+    public TimePickerView(Context context, Type type) {
         super(context);
 
         LayoutInflater.from(context).inflate(R.layout.pickerview_time, contentContainer);
@@ -53,7 +53,6 @@ public class DSSTimePickerView extends BasePickerView implements View.OnClickLis
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
-        int second = calendar.get(Calendar.SECOND);
         wheelTime.setPicker(year, month, day, hours, minute);
 
     }

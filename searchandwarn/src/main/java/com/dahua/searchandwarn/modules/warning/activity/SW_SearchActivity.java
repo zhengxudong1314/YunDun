@@ -22,7 +22,7 @@ import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
 import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.TimeUtils;
-import com.lvfq.pickerview.DSSTimePickerView;
+import com.lvfq.pickerview.TimePickerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -142,9 +142,9 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
 
 
     private void getTimePicker(final TextView tvTime) {
-        DSSTimePickerView pickerView = new DSSTimePickerView(this, DSSTimePickerView.Type.ALL);
+        TimePickerView pickerView = new TimePickerView(this, TimePickerView.Type.ALL);
         pickerView.show();
-        pickerView.setOnTimeSelectListener(new DSSTimePickerView.OnTimeSelectListener() {
+        pickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date) {
                 tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));

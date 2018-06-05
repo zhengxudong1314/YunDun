@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Created by Sai on 15/11/22.
  */
-public class DSSOptionsPickerView<T> extends BasePickerView implements View.OnClickListener {
+public class OptionsPickerView<T> extends BasePickerView implements View.OnClickListener {
     WheelOptions wheelOptions;
     private View btnSubmit, btnCancel;
     private TextView tvTitle;
@@ -22,7 +22,7 @@ public class DSSOptionsPickerView<T> extends BasePickerView implements View.OnCl
     private static final String TAG_SUBMIT = "submit";
     private static final String TAG_CANCEL = "cancel";
 
-    public DSSOptionsPickerView(Context context) {
+    public OptionsPickerView(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.pickerview_options, contentContainer);
         // -----确定和取消按钮

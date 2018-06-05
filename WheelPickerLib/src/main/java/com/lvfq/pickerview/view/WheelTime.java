@@ -3,7 +3,7 @@ package com.lvfq.pickerview.view;
 import android.content.Context;
 import android.view.View;
 import com.bigkoo.pickerview.R;
-import com.lvfq.pickerview.DSSTimePickerView.Type;
+import com.lvfq.pickerview.TimePickerView.Type;
 import com.lvfq.pickerview.adapter.NumericWheelAdapter;
 import com.lvfq.pickerview.lib.WheelView;
 import com.lvfq.pickerview.listener.OnItemSelectedListener;

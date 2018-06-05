@@ -17,11 +17,9 @@ public class SW_StaticDialogActivity extends AppCompatActivity {
     private TextView tvName;
     private TextView tvSimilarity;
     private TextView tvKuName;
-    private TextView tvKuId;
     private TextView tvCardId;
     private TextView tvTitle;
     private ImageView ivBack;
-    private TextView tvPersonId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
