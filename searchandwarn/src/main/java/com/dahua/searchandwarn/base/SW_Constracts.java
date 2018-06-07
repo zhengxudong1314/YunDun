@@ -14,8 +14,8 @@ public  class SW_Constracts {
     public static String baseUrl = "http://10.23.10.22:80";
     public static String getBaseUrl(Context context){
         SharedPreferences sp = context.getSharedPreferences("dh_data", Context.MODE_PRIVATE);
-        String ip = sp.getString("SERVER_IP_HELP","10.23.10.22");
-        String port = sp.getString("SERVER_PORT_HELP","80");
+        String ip = sp.getString("SERVER_IP_HELP","61.128.209.66");
+        String port = sp.getString("SERVER_PORT_HELP","81");
         baseUrl = "http://" + ip + ":" + port;
         return baseUrl;
     }

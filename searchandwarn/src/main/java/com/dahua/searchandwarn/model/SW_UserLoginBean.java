@@ -13,8 +13,8 @@ public class SW_UserLoginBean {
      * message : null
      * data : {"name":null,"successMsg":"登陆成功！","account":"yundunProapp"}
      */
-    public static final String USERNANE = "xzm";
-    public static final String PASSWORD = "123456";
+    public static final String USERNANE = "研发测试";
+    public static final String PASSWORD = "yfcs123456";
     private int retCode;
     private String message;
     private DataBean data;
@@ -50,15 +50,15 @@ public class SW_UserLoginBean {
          * account : yundunProapp
          */
 
-        private Object name;
+        private String name;
         private String successMsg;
         private String account;
 
-        public Object getName() {
+        public String getName() {
             return name;
         }
 
-        public void setName(Object name) {
+        public void setName(String name) {
             this.name = name;
         }
 

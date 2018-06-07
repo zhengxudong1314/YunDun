@@ -22,6 +22,7 @@ import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
 import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.TimeUtils;
+import com.dahua.searchandwarn.utils.ToastUtils;
 import com.lvfq.pickerview.TimePickerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -104,9 +105,9 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
         if (i == R.id.iv_back) {
             finish();
         } else if (i == R.id.tv_start_time) {
-            getTimePicker(tvStartTime);
+            getStartTimePicker(tvStartTime);
         } else if (i == R.id.tv_end_time) {
-            getTimePicker(tvEndTime);
+            getEndTimePicker(tvEndTime);
         } else if (i == R.id.tv_site) {
             startActivity(new Intent(this, SW_TreeActivity.class));
         } else if (i == R.id.tv_state) {
@@ -141,13 +142,46 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    private void getTimePicker(final TextView tvTime) {
+    private void getEndTimePicker(final TextView tvTime) {
+        final String stime = tvStartTime.getText().toString();
         TimePickerView pickerView = new TimePickerView(this, TimePickerView.Type.ALL);
         pickerView.show();
         pickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date) {
-                tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                if (stime.equals(getString(R.string.choose))){
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                }else {
+                    Date date1 = TimeUtils.string2Date(stime);
+                    if (date.getTime() > date1.getTime()) {
+                        tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                    } else {
+                        ToastUtils.showShort("结束时间不能小于开始时间");
+                        return;
+                    }
+                }
+
+            }
+        });
+    }
+    private void getStartTimePicker(final TextView tvTime) {
+        final String etime = tvEndTime.getText().toString();
+        TimePickerView pickerView = new TimePickerView(this, TimePickerView.Type.ALL);
+        pickerView.show();
+        pickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date) {
+                if (etime.equals(getString(R.string.choose))){
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                }else {
+                    Date date1 = TimeUtils.string2Date(etime);
+                    if (date.getTime() < date1.getTime()) {
+                        tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                    } else {
+                        ToastUtils.showShort("开始时间不能大于结束时间");
+                        return;
+                    }
+                }
             }
         });
     }

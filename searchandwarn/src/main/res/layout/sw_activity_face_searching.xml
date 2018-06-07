@@ -156,6 +156,7 @@
             android:orientation="horizontal">
 
             <EditText
+                android:maxLength="3"
                 android:id="@+id/et_similarity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -163,7 +164,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="right"
-                android:inputType="text|number"
+                android:inputType="number"
                 android:textColor="@color/tvColorOne"
                 android:textSize="14sp" />
 

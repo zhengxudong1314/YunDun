@@ -11,23 +11,29 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+
     <application>
         <activity android:name=".modules.warning.activity.SW_WarningDetailsActivity" />
-        <activity android:name=".modules.warning.activity.SW_SearchActivity" />
+        <activity
+            android:name=".modules.warning.activity.SW_SearchActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modules.warning.activity.SW_DisposeDetailsActivity" />
         <activity android:name=".modules.warning.activity.SW_PhotoActivity" />
         <activity android:name=".modules.warning.activity.SW_IgnoreActivity" />
-        <activity android:launchMode="singleTask" android:name=".modules.warning.activity.SW_WarningAccpetActivity" />
+        <activity
+            android:name=".modules.warning.activity.SW_WarningAccpetActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".modules.warning.activity.SW_HistroyWarnActivity" />
         <activity
             android:name=".modules.facesearching.activity.SW_FaceSearchingActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".modules.facesearching.activity.SW_FaceSearchingResultActivity" />
         <activity android:name=".modules.facesearching.activity.SW_StaticDialogActivity" />
         <activity android:name=".modules.facesearching.activity.SW_DynamicDialogActivity" />
         <activity android:name=".modules.warning.activity.SW_TreeActivity"></activity>
-        <service android:name="com.dahua.searchandwarn.base.UnReadService">
 
+        <service android:name="com.dahua.searchandwarn.base.UnReadService">
         </service>
     </application>
 

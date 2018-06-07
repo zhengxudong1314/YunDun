@@ -56,86 +56,78 @@ public class SW_FaceCropBean {
          * smallImgBase64 :
          */
 
-        private int obj_right;
-        private int face_gender;
-        private int obj_bottom;
-        private int obj_left;
-        private int obj_top;
-        private int face_age;
-        private int whole_height;
-        private int whole_width;
+        private Object obj_right;
+        private Object face_gender;
+        private Object obj_bottom;
+        private Object obj_left;
+        private Object obj_top;
+        private Object face_age;
+        private Object whole_height;
+        private Object whole_width;
         private String smallImgBase64;
         private boolean isChecked;
 
-        public boolean isChecked() {
-            return isChecked;
-        }
-
-        public void setChecked(boolean checked) {
-            isChecked = checked;
-        }
-
-        public int getObj_right() {
+        public Object getObj_right() {
             return obj_right;
         }
 
-        public void setObj_right(int obj_right) {
+        public void setObj_right(Object obj_right) {
             this.obj_right = obj_right;
         }
 
-        public int getFace_gender() {
+        public Object getFace_gender() {
             return face_gender;
         }
 
-        public void setFace_gender(int face_gender) {
+        public void setFace_gender(Object face_gender) {
             this.face_gender = face_gender;
         }
 
-        public int getObj_bottom() {
+        public Object getObj_bottom() {
             return obj_bottom;
         }
 
-        public void setObj_bottom(int obj_bottom) {
+        public void setObj_bottom(Object obj_bottom) {
             this.obj_bottom = obj_bottom;
         }
 
-        public int getObj_left() {
+        public Object getObj_left() {
             return obj_left;
         }
 
-        public void setObj_left(int obj_left) {
+        public void setObj_left(Object obj_left) {
             this.obj_left = obj_left;
         }
 
-        public int getObj_top() {
+        public Object getObj_top() {
             return obj_top;
         }
 
-        public void setObj_top(int obj_top) {
+        public void setObj_top(Object obj_top) {
             this.obj_top = obj_top;
         }
 
-        public int getFace_age() {
+        public Object getFace_age() {
             return face_age;
         }
 
-        public void setFace_age(int face_age) {
+        public void setFace_age(Object face_age) {
             this.face_age = face_age;
         }
 
-        public int getWhole_height() {
+        public Object getWhole_height() {
             return whole_height;
         }
 
-        public void setWhole_height(int whole_height) {
+        public void setWhole_height(Object whole_height) {
             this.whole_height = whole_height;
         }
 
-        public int getWhole_width() {
+        public Object getWhole_width() {
             return whole_width;
         }
 
-        public void setWhole_width(int whole_width) {
+        public void setWhole_width(Object whole_width) {
             this.whole_width = whole_width;
         }
 
@@ -145,6 +137,14 @@ public class SW_FaceCropBean {
 
         public void setSmallImgBase64(String smallImgBase64) {
             this.smallImgBase64 = smallImgBase64;
+        }
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.dahua.searchandwarn.modules.facesearching.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +14,11 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
+import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_DynamicBean;
 import com.dahua.searchandwarn.model.SW_FaceParams;
 import com.dahua.searchandwarn.model.SW_StaticBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.LogUtils;
@@ -36,12 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_FaceSearchingResultActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,6 +60,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     private RecyclerView rvStatic;
     private RecyclerView rvDynamic;
     private List<SW_DynamicBean.DataBean> data;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +71,10 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         tvTitle.setText("人脸比对");
         rvDynamic.setLayoutManager(new LinearLayoutManager(this));
         rvStatic.setLayoutManager(new LinearLayoutManager(this));
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
         getStaticData();
         getDynamicData();
     }
@@ -98,20 +102,9 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         map.put("deviceCodes", deviceCodes);
         map.put("imageBase64", imageBase64);
         map.put("operator", operator);
-        LogUtils.e(similarity+":"+operator);
+        LogUtils.e(similarity + ":" + operator);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_DynamicBean>>() {
-                    @Override
-                    public ObservableSource<SW_DynamicBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getDynamicData(map);
-                        } else {
-                            return null;
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
+        restfulApi.getDynamicData(map).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_DynamicBean>() {
                     @Override
@@ -128,67 +121,72 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                             } else {
                                 changeRvTu();
                             }
-                        }else {
+                        } else {
                             tvDymNo.setVisibility(View.VISIBLE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        progressDialog.dismiss();
                         tvDymNo.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        progressDialog.dismiss();
                     }
                 });
     }
 
     private void changeRvTu() {
-        BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_dymnic_compare, data) {
+        if (data != null) {
+            BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_dymnic_compare, data) {
 
-            @Override
-            protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
-                helper.setText(R.id.tv_time, item.getFaceTime())
-                        .setText(R.id.tv_similarity, TwoPointUtils.doubleToString(Double.valueOf(item.getSimilarity()))+"%")
-                        .setText(R.id.tv_site, item.getSex());
-                ImageView ivImg = helper.getView(R.id.iv_img);
-                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
-            }
-        };
-        rvDynamic.setAdapter(dynamicAdapter);
-        dynamicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(SW_FaceSearchingResultActivity.this, SW_DynamicDialogActivity.class);
-                intent.putExtra("datas", data.get(position));
-                startActivity(intent);
-            }
-        });
+                @Override
+                protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
+                    helper.setText(R.id.tv_time, item.getFaceTime())
+                            .setText(R.id.tv_similarity, TwoPointUtils.doubleToString(Double.valueOf(item.getSimilarity())) + "%")
+                            .setText(R.id.tv_site, item.getSex());
+                    ImageView ivImg = helper.getView(R.id.iv_img);
+                    Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
+                }
+            };
+            rvDynamic.setAdapter(dynamicAdapter);
+            dynamicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    Intent intent = new Intent(SW_FaceSearchingResultActivity.this, SW_DynamicDialogActivity.class);
+                    intent.putExtra("datas", data.get(position));
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void changeRvZhou() {
-        Collections.sort(data,new DateComparator());
-        BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_time_line_style, data) {
+        if (data != null) {
+            Collections.sort(data, new DateComparator());
+            BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_time_line_style, data) {
 
-            @Override
-            protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
-                helper.setText(R.id.tv_time, item.getFaceTime())
-                        .setText(R.id.tv_site, item.getSex());
-                ImageView iv_small = helper.getView(R.id.iv_small);
-                Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_small);
-            }
-        };
-        rvDynamic.setAdapter(dynamicAdapter);
-        dynamicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Intent intent = new Intent(SW_FaceSearchingResultActivity.this, SW_DynamicDialogActivity.class);
-                intent.putExtra("datas", data.get(position));
-                startActivity(intent);
-            }
-        });
+                @Override
+                protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
+                    helper.setText(R.id.tv_time, item.getFaceTime())
+                            .setText(R.id.tv_site, item.getSex());
+                    ImageView iv_small = helper.getView(R.id.iv_small);
+                    Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_small);
+                }
+            };
+            rvDynamic.setAdapter(dynamicAdapter);
+            dynamicAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    Intent intent = new Intent(SW_FaceSearchingResultActivity.this, SW_DynamicDialogActivity.class);
+                    intent.putExtra("datas", data.get(position));
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void getStaticData() {
@@ -197,18 +195,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         map.put("imageBase64", imageBase64);
         map.put("operator", operator);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_StaticBean>>() {
-                    @Override
-                    public ObservableSource<SW_StaticBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getStaticData(map);
-                        } else {
-                            return null;
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
+        restfulApi.getStaticData(map).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_StaticBean>() {
                     @Override
@@ -244,19 +231,20 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                                     }
                                 });
                             }
-                        }else {
+                        } else {
                             tvStaticNo.setVisibility(View.VISIBLE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        progressDialog.dismiss();
                         tvStaticNo.setVisibility(View.VISIBLE);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        progressDialog.dismiss();
                     }
                 });
     }
@@ -269,12 +257,15 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         startTime = bean.getStartTime();
         endTime = bean.getEndTime();
         operator = bean.getOperator();
-        LogUtils.e(imageBase64);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (progressDialog!=null){
+            progressDialog.dismiss();
+            progressDialog=null;
+        }
         EventBus.getDefault().unregister(this);
         compositeDisposable.dispose();
     }
@@ -309,6 +300,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
             return -1;
         }
     }
+
     public static Date stringToDate(String dateString) {
         ParsePosition position = new ParsePosition(0);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

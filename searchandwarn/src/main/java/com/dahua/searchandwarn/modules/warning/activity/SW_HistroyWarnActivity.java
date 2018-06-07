@@ -100,17 +100,7 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
 
     private void getNetData(final Map<String, String> map) {
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_HistoryWarnBean>>() {
-                    @Override
-                    public ObservableSource<SW_HistoryWarnBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getHistoryWarn(map);
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
+        restfulApi.getHistoryWarn(map).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_HistoryWarnBean>() {
                     @Override

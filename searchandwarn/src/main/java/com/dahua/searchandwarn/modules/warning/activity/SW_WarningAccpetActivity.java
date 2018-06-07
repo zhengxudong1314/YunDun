@@ -47,7 +47,6 @@ public class SW_WarningAccpetActivity extends AppCompatActivity implements View.
             getSupportActionBar().hide();
         }*/
         setContentView(R.layout.sw_activity_warning_accpet);
-        EventBus.getDefault().register(this);
         //初始化控件
         initView();
         initData();
@@ -152,18 +151,9 @@ public class SW_WarningAccpetActivity extends AppCompatActivity implements View.
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-    public void onMoon(String str) {
-        if (str.equals("failure")){
-            tvLoadingError.setText("加载失败");
-            tvLoadingError.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
         LoadingDialogUtils.unInit();
     }
 

@@ -61,17 +61,7 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
     private void getNetData() {
 
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_SingleWarnBean>>() {
-                    @Override
-                    public ObservableSource<SW_SingleWarnBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getSingleWarn(alarmId);
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
+        restfulApi.getSingleWarn(alarmId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_SingleWarnBean>() {
                     @Override

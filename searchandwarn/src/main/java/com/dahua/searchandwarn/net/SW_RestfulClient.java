@@ -80,47 +80,4 @@ public class SW_RestfulClient {
         return restfulApi;
     }
 
-    private int retCode;
-    private Disposable disposable;
-
-    public boolean userLogin() {
-        getInstance().getRestfulApi(SW_Constracts.baseUrl)
-                .userLogin("yundunProapp", "yundunapp123456")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SW_UserLoginBean>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                disposable = d;
-            }
-
-            @Override
-            public void onNext(SW_UserLoginBean userLoginBean) {
-                retCode = userLoginBean.getRetCode();
-
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                LogUtils.e(e.getMessage());
-                if (disposable != null && !disposable.isDisposed()) {
-                    disposable.dispose();
-                }
-            }
-
-            @Override
-            public void onComplete() {
-                LogUtils.e("请求完成");
-                if (disposable != null && !disposable.isDisposed()) {
-                    disposable.dispose();
-                }
-            }
-        });
-
-        if (retCode == 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package com.dahua.searchandwarn.modules.warning.activity;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,22 +23,19 @@ import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.base.SqlietModel;
 import com.dahua.searchandwarn.model.SW_AddressTreeBean;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.google.gson.Gson;
+import com.dahua.searchandwarn.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_TreeActivity extends AppCompatActivity {
@@ -54,7 +52,7 @@ public class SW_TreeActivity extends AppCompatActivity {
     private StringBuffer endCode;
     private List<SW_AddressTreeBean.BaseInfo> baseInfos;
     private List<SW_AddressTreeBean.BaseInfo> allBaseInfos;
-
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,18 +69,10 @@ public class SW_TreeActivity extends AppCompatActivity {
         endCode = new StringBuffer();
         rv.setLayoutManager(new LinearLayoutManager(this));
         rvEt.setLayoutManager(new LinearLayoutManager(this));
-        //start
-        String s = "{\"data\":[{\"orgName\":\"重庆\",\"children\":[{\"orgName\":\"直辖市\",\"children\":[{\"orgName\":\"渝北区\",\"children\":[{\"orgName\":\"新牌坊派出所\",\"children\":[{\"orgName\":\"新牌坊社区\",\"orgCode\":\"5001120708\"},{\"orgName\":\"松树桥社区\",\"orgCode\":\"5001120710\"},{\"orgName\":\"花卉西路社区\",\"orgCode\":\"5001120711\"},{\"orgName\":\"花卉东路社区\",\"orgCode\":\"5001120713\"}],\"orgCode\":\"50011207\"}],\"orgCode\":\"500112\"},{\"orgName\":\"南岸区\",\"children\":[{\"orgName\":\"茶园\",\"orgCode\":\"50010817\"},{\"devCode\":\"500000000013109571103\",\"org_id\":\"502\",\"devName\":\"虚拟抓拍机2\"},{\"devCode\":\"500000000013109571102\",\"org_id\":\"503\",\"devName\":\"虚拟抓拍机3\"}],\"orgCode\":\"500108\"},{\"orgName\":\"九龙坡区\",\"orgCode\":\"500107\"},{\"orgName\":\"璧山区\",\"orgCode\":\"500120\"}],\"orgCode\":\"5001\"},{\"devCode\":\"500000000013109571101\",\"org_id\":\"501\",\"devName\":\"虚拟抓拍机1\"}],\"orgCode\":\"50\"}],\"retCode\":0,\"message\":\"请求成功\"}";
-        Gson gson = new Gson();
-        SW_AddressTreeBean addressTreeBean = gson.fromJson(s, SW_AddressTreeBean.class);
-        List<SW_AddressTreeBean.BaseInfo> data = addressTreeBean.getData();
-        SW_AddressTreeAdapter treeAdapter = new SW_AddressTreeAdapter(SW_TreeActivity.this, R.layout.sw_item_address_tree, data);
-        rv.setAdapter(treeAdapter);
-
-        for (SW_AddressTreeBean.BaseInfo info : data) {
-            filter(info);
-        }
-        //end
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("加载中...");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
         getNetData();
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,17 +187,7 @@ public class SW_TreeActivity extends AppCompatActivity {
 
     private void getNetData() {
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_AddressTreeBean>>() {
-                    @Override
-                    public ObservableSource<SW_AddressTreeBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getAddressTree();
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
+        restfulApi.getAddressTree().subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_AddressTreeBean>() {
                     @Override
@@ -228,12 +208,13 @@ public class SW_TreeActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
+                      progressDialog.dismiss();
+                        ToastUtils.showShort("组织树获取失败");
                     }
 
                     @Override
                     public void onComplete() {
-
+                        progressDialog.dismiss();
                     }
                 });
 
@@ -244,5 +225,9 @@ public class SW_TreeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         compositeDisposable.dispose();
+        if (progressDialog!=null){
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
     }
 }

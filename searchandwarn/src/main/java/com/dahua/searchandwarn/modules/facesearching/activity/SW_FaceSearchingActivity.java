@@ -12,7 +12,9 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
+import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
 import com.dahua.searchandwarn.model.SW_FaceCropBean;
@@ -51,21 +54,21 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.ref.SoftReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_FaceSearchingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -109,7 +112,47 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         rv.setLayoutManager(linearLayoutManager);
 
+        etSimilarity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                etSimilarity.setText("");
+            }
+        });
+        etSimilarity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int max = 100;
+                int min =0;
+                if (start >= 0) {//从一输入就开始判断，
+                    if (min != -1 && max != -1) {
+                        try {
+                            int num = Integer.parseInt(s.toString());
+                            //判断当前edittext中的数字(可能一开始Edittext中有数字)是否大于max
+                            if (num > max) {
+                                s = String.valueOf(max);//如果大于max，则内容为max
+                                etSimilarity.setText(s);
+                            } else if (num < min) {
+                                s = String.valueOf(min);//如果小于min,则内容为min
+                            }
+                        } catch (NumberFormatException e) {
+
+                        }
+                        //edittext中的数字在max和min之间，则不做处理，正常显示即可。
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+
+            }
+        });
     }
 
 
@@ -179,6 +222,14 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             SW_FaceParams sw_faceParams = new SW_FaceParams();
             sw_faceParams.setStartTime(startTime);
             sw_faceParams.setEndTime(endTime);
+            if (imgUrl == null) {
+                ToastUtils.showShort("请选择人脸");
+                return;
+            }
+            if (tvSite.getText().toString().equals(getString(R.string.choose))) {
+                ToastUtils.showShort("请选择抓拍地点");
+                return;
+            }
             if (deviceCodes == null) {
                 sw_faceParams.setDeviceCodes("-1");
             } else {
@@ -321,20 +372,10 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
     }
 
     private void getPic(String path) {
+        LoadingDialogUtils.show(SW_FaceSearchingActivity.this);
         final String encode = Base64FileUtils.fileToBase64(path);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_FaceCropBean>>() {
-                    @Override
-                    public ObservableSource<SW_FaceCropBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getFaceCrop("data:image/jpeg;base64," + encode);
-                        } else {
-                            return null;
-                        }
-                    }
-                })
-                .subscribeOn(Schedulers.io())
+        restfulApi.getFaceCrop("data:image/jpeg;base64," + encode).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_FaceCropBean>() {
                     @Override
@@ -347,7 +388,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                         if (sw_faceCropBean.getRetCode() == 0) {
                             list = sw_faceCropBean.getData();
                             if (list.size() == 0) {
-                                ToastUtils.showLong("未检测到人脸");
+                                ToastUtils.showLong("获取人脸失败");
                             }
                             for (int i = 0; i < list.size(); i++) {
                                 if (i == 0) {
@@ -401,16 +442,21 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                                     });
                                 }
                             });
+                        }else {
+                            ToastUtils.showLong(sw_faceCropBean.getMessage());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        ToastUtils.showLong("人脸检测失败");
+                        LoadingDialogUtils.dismiss();
+                        LogUtils.e("onError:"+e.getMessage());
+                        ToastUtils.showLong("获取人脸失败");
                     }
 
                     @Override
                     public void onComplete() {
+                        LoadingDialogUtils.dismiss();
                         LogUtils.e("onComplete");
                     }
                 });
@@ -438,24 +484,38 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
 
 
     private void getStartTimePicker(final TextView tvTime) {
+        final String etime = tvEndTime.getText().toString();
         TimePickerView pickerView = new TimePickerView(this, TimePickerView.Type.ALL);
         pickerView.show();
         pickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date) {
-                tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                Date date1 = TimeUtils.string2Date(etime);
+                if (date.getTime() < date1.getTime()) {
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                } else {
+                    ToastUtils.showShort("开始时间不能大于结束时间");
+                    return;
+                }
             }
         });
 
     }
 
     private void getEndStartTimePicker(final TextView tvTime) {
+        final String stime = tvStartTime.getText().toString();
         TimePickerView pickerView = new TimePickerView(this, TimePickerView.Type.ALL);
         pickerView.show();
         pickerView.setOnTimeSelectListener(new TimePickerView.OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date) {
-                tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                Date date1 = TimeUtils.string2Date(stime);
+                if (date.getTime() > date1.getTime()) {
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                } else {
+                    ToastUtils.showShort("结束时间不能小于开始时间");
+                    return;
+                }
             }
         });
 
@@ -517,8 +577,14 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
     }
 
     private Bitmap decode(String path) {
+        InputStream input = null;
         byte[] bytes = Base64.decode(path, Base64.DEFAULT);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inSampleSize = 8;
+        //Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        input = new ByteArrayInputStream(bytes);
+        SoftReference softRef = new SoftReference(BitmapFactory.decodeStream(input, null, options));
+        Bitmap bitmap = (Bitmap)softRef.get();
         return bitmap;
     }
 

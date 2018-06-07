@@ -24,7 +24,6 @@ import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_DisposeBean;
 import com.dahua.searchandwarn.model.SW_SingleWarnBean;
 import com.dahua.searchandwarn.model.SW_TypeBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.ToastUtils;
@@ -32,12 +31,10 @@ import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_DisposeDetailsActivity extends AppCompatActivity implements View.OnClickListener {
@@ -85,17 +82,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
     private void getNetData() {
 
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_SingleWarnBean>>() {
-                    @Override
-                    public ObservableSource<SW_SingleWarnBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.getSingleWarn(alarmId);
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
+        restfulApi.getSingleWarn(alarmId).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_SingleWarnBean>() {
                     @Override
@@ -235,17 +222,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
     private void getDisposeData() {
 
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_DisposeBean>>() {
-                    @Override
-                    public ObservableSource<SW_DisposeBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.warnDispose(alarmId, suggestion, resultType, operator);
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
+        restfulApi.warnDispose(alarmId, suggestion, resultType, operator).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_DisposeBean>() {
                     @Override
