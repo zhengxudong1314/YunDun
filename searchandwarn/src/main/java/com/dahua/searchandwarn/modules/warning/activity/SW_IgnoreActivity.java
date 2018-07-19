@@ -17,7 +17,7 @@ import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_IgnoreBean;
 import com.dahua.searchandwarn.model.SW_SingleWarnBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
+import com.dahua.searchandwarn.model.SW_TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.KeyboardUtils;
@@ -26,12 +26,10 @@ import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClickListener {
@@ -118,18 +116,9 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void getNetData() {
+        LoadingDialogUtils.show(this);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_IgnoreBean>>() {
-                    @Override
-                    public ObservableSource<SW_IgnoreBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                        if (sw_userLoginBean.getRetCode() == 0) {
-                            return restfulApi.warnIgnore(alarmId, ignoreMsg, operator);
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
+        restfulApi.warnIgnore(alarmId, ignoreMsg, operator).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<SW_IgnoreBean>() {
                     @Override
@@ -141,14 +130,12 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                     public void onNext(SW_IgnoreBean sw_ignoreBean) {
                         int retCode = sw_ignoreBean.getRetCode();
                         if (retCode == 0) {
-                            EventBus.getDefault().postSticky(position);
+                            EventBus.getDefault().postSticky(new SW_TypeBean(position,"已忽略"));
                             ToastUtils.showShort("忽略成功");
                             LoadingDialogUtils.dismiss();
                             finish();
                         } else {
                             ToastUtils.showLong(sw_ignoreBean.getMessage());
-                            EventBus.getDefault().postSticky("false");
-                            finish();
                         }
                     }
 
@@ -237,7 +224,6 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
             finish();
         } else if (i == R.id.tv_sure) {
             ignoreMsg = etReason.getText().toString().trim();
-            LoadingDialogUtils.show(this);
             getNetData();
 
         }

@@ -88,7 +88,7 @@ public class SW_DynamicBean {
         private String household;
         private String obj_left;
         private String obj_top;
-        private String age;
+        private int age;
 
         public String getOriginPlace() {
             return originPlace;
@@ -242,11 +242,11 @@ public class SW_DynamicBean {
             this.obj_top = obj_top;
         }
 
-        public String getAge() {
+        public int getAge() {
             return age;
         }
 
-        public void setAge(String age) {
+        public void setAge(int age) {
             this.age = age;
         }
     }

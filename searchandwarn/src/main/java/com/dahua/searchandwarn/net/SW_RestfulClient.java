@@ -2,17 +2,9 @@ package com.dahua.searchandwarn.net;
 
 import android.util.Log;
 
-import com.dahua.searchandwarn.base.SW_Constracts;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
-import com.dahua.searchandwarn.utils.LogUtils;
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

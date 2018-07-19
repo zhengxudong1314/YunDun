@@ -11,8 +11,19 @@ public class SW_TypeBean {
 
     private String position;
 
-    public SW_TypeBean(String position) {
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public SW_TypeBean(String position,String status) {
         this.position = position;
+        this.status = status;
     }
 
     public String getErrer() {

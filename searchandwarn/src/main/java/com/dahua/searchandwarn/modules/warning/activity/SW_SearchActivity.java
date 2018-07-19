@@ -150,11 +150,11 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onTimeSelect(Date date) {
                 if (stime.equals(getString(R.string.choose))){
-                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
                 }else {
                     Date date1 = TimeUtils.string2Date(stime);
                     if (date.getTime() > date1.getTime()) {
-                        tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                        tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
                     } else {
                         ToastUtils.showShort("结束时间不能小于开始时间");
                         return;
@@ -172,11 +172,11 @@ public class SW_SearchActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onTimeSelect(Date date) {
                 if (etime.equals(getString(R.string.choose))){
-                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
                 }else {
                     Date date1 = TimeUtils.string2Date(etime);
                     if (date.getTime() < date1.getTime()) {
-                        tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                        tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
                     } else {
                         ToastUtils.showShort("开始时间不能大于结束时间");
                         return;

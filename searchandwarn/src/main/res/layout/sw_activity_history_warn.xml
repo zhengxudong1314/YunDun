@@ -6,13 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".modules.warning.activity.SW_HistroyWarnActivity">
-    <TextView
-        android:id="@+id/tv_loading_error"
-        android:gravity="center"
-        android:textSize="17sp"
-        android:textColor="@color/tvColorOne"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
     <include layout="@layout/sw_view_top_title" />
     <TextView
         android:visibility="gone"

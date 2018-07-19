@@ -17,7 +17,6 @@ import com.dahua.searchandwarn.adapter.SW_HistoryWarnAdapter;
 import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 
@@ -25,12 +24,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_HistroyWarnActivity extends AppCompatActivity implements View.OnClickListener {
@@ -42,7 +39,6 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
     private List<SW_HistoryWarnBean.DataBean> datas;
     private Intent intent;
     private CompositeDisposable compositeDisposable;
-    private TextView tvLoadingError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +87,7 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
         if (!TextUtils.isEmpty(cardId)) {
             map.put("reason", reason);
         }
-        // todo  替换用户名为 SW_UserLoginBean.USERNANE
-        map.put("appUser", SW_UserLoginBean.USERNANE);
+        map.put("appUser", SW_Constracts.getUserName(SW_HistroyWarnActivity.this));
         map.put("pageNum", "1");
         map.put("pageSize", "50");
         return map;
@@ -114,10 +109,8 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
                         if (retCode == 0) {
                             LoadingDialogUtils.dismiss();
                             datas = historyWarnBean.getData();
-                            tvLoadingError.setVisibility(View.GONE);
                             if (datas == null || datas.size() == 0) {
                                 tvNoData.setVisibility(View.VISIBLE);
-                                tvLoadingError.setVisibility(View.GONE);
                             } else {
                                 rv.setLayoutManager(new LinearLayoutManager(SW_HistroyWarnActivity.this));
                                 historyWarnAdapter = new SW_HistoryWarnAdapter(R.layout.sw_item_history_warn, datas);
@@ -134,14 +127,12 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
                             }
                         } else {
                             LoadingDialogUtils.dismiss();
-                            tvLoadingError.setText("加载失败");
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         LoadingDialogUtils.dismiss();
-                        tvLoadingError.setText("加载失败");
                     }
 
                     @Override
@@ -153,7 +144,6 @@ public class SW_HistroyWarnActivity extends AppCompatActivity implements View.On
     }
 
     private void initView() {
-        tvLoadingError = (TextView) findViewById(R.id.tv_loading_error);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         rv = (RecyclerView) findViewById(R.id.rv);

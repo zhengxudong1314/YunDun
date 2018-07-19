@@ -1,6 +1,5 @@
 package com.dahua.searchandwarn.adapter;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -43,7 +42,7 @@ public class SW_DisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.DataB
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, SW_WarningDetailsActivity.class);
-                intent = new Intent(context, SW_WarningDetailsActivity.class);
+                //intent = new Intent(context, SW_WarningDetailsActivity.class);
                 intent.putExtra("alarmId", item.getAlarmId());
                 context.startActivity(intent);
             }
@@ -52,9 +51,10 @@ public class SW_DisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.DataB
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setComponent(new ComponentName("com.mm.dss", "com.mm.dss.map.BaiduMapActivity"));
-                intent.putExtra("longitude", bean.getDeviceX());//经度
-                intent.putExtra("latitued", bean.getDeviceY());//纬度
+                //intent.setComponent(new ComponentName("com.mm.dss", "com.mm.dss.map.BaiduMapActivity"));
+                intent.setAction("com.mm.dss.alarm.map");
+                intent.putExtra("longtitude", bean.getDeviceX());//经度
+                intent.putExtra("latitude", bean.getDeviceY());//纬度
                 intent.putExtra("name", "dahua");
                 context.startActivity(intent);
             }

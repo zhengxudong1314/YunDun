@@ -3,8 +3,10 @@ package com.dahua.searchandwarn.modules.facesearching.activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -30,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
@@ -39,7 +39,6 @@ import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_DeviceCodeBean;
 import com.dahua.searchandwarn.model.SW_FaceCropBean;
 import com.dahua.searchandwarn.model.SW_FaceParams;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.modules.warning.activity.SW_TreeActivity;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
@@ -49,18 +48,22 @@ import com.dahua.searchandwarn.utils.TimeConstants;
 import com.dahua.searchandwarn.utils.TimeUtils;
 import com.dahua.searchandwarn.utils.ToastUtils;
 import com.lvfq.pickerview.TimePickerView;
+import com.zxy.tiny.Tiny;
+import com.zxy.tiny.callback.FileCallback;
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.lang.ref.SoftReference;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -94,7 +97,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
     private CompositeDisposable compositeDisposable;
     private Intent intent;
     private String deviceCodes;
-    private String endPath = Environment.getExternalStorageDirectory() + "/img.jpeg";
+    private String endPath = new File("/facecrop/").getAbsolutePath();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +129,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 int max = 100;
-                int min =0;
+                int min = 0;
                 if (start >= 0) {//从一输入就开始判断，
                     if (min != -1 && max != -1) {
                         try {
@@ -170,8 +173,8 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         tvSure = (TextView) findViewById(R.id.tv_sure);
         rv = (RecyclerView) findViewById(R.id.rv);
         Date date = TimeUtils.getDateByNow(get30DayMillis(), TimeConstants.MSEC);
-        strStratTime = TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd 00:00:00"));
-        strEndTime = TimeUtils.getNowString(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss"));
+        strStratTime = TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd 00:00:00"));
+        strEndTime = TimeUtils.getNowString(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         ivBack.setOnClickListener(this);
         tvStartTime.setOnClickListener(this);
         tvEndTime.setOnClickListener(this);
@@ -200,7 +203,6 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             showPopupWindow();
         } else if (i == R.id.ll_face) {
             showPopupWindow();
-
         } else if (i == R.id.tv_start_time) {
             getStartTimePicker(tvStartTime);
         } else if (i == R.id.tv_end_time) {
@@ -209,7 +211,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             startActivity(new Intent(this, SW_TreeActivity.class));
         } else if (i == R.id.tv_sure) {
             imgUrl = null;
-            if (list!=null){
+            if (list != null) {
                 for (int j = 0; j < list.size(); j++) {
                     if (list.get(j).isChecked()) {
                         imgUrl = list.get(j).getSmallImgBase64();
@@ -226,6 +228,10 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                 ToastUtils.showShort("请选择人脸");
                 return;
             }
+            if (TextUtils.isEmpty(etSimilarity.getText().toString())) {
+                ToastUtils.showShort("请填写相似度");
+                return;
+            }
             if (tvSite.getText().toString().equals(getString(R.string.choose))) {
                 ToastUtils.showShort("请选择抓拍地点");
                 return;
@@ -239,7 +245,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                 sw_faceParams.setImageBase64(imgUrl);
             }
             sw_faceParams.setSimilarity(similarity);
-            sw_faceParams.setOperator(SW_UserLoginBean.USERNANE);
+            sw_faceParams.setOperator(SW_Constracts.getUserName(SW_FaceSearchingActivity.this));
             EventBus.getDefault().postSticky(sw_faceParams);
             startActivity(intent);
         }
@@ -248,9 +254,9 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMood(SW_DeviceCodeBean bean) {
-        if (TextUtils.isEmpty(bean.getAddress())){
+        if (TextUtils.isEmpty(bean.getAddress())) {
             tvSite.setText(R.string.choose);
-        }else {
+        } else {
             tvSite.setText(bean.getAddress());
         }
         deviceCodes = bean.getDevCode();
@@ -303,6 +309,9 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         });
     }
 
+    //小米手机路径转换
+    private String path = "";
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -311,15 +320,33 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                 if (resultCode == RESULT_OK) {
                     if (file != null) {
                         try {
-                            llFace.setVisibility(View.GONE);
-                            ivFace.setVisibility(View.VISIBLE);
                             String path = file.getAbsolutePath();
+                            /*llFace.setVisibility(View.GONE);
+                            ivFace.setVisibility(View.VISIBLE);
                             Bitmap bitmap = BitmapFactory.decodeFile(path);
                             FileOutputStream os = new FileOutputStream(endPath);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                            int bitmapDegree = getBitmapDegree(path);
+                            Bitmap bitmap1 = rotateBitmapByDegree(bitmap, bitmapDegree);
+                            ivFace.setImageBitmap(bitmap1);
+                            //Glide.with(SW_FaceSearchingActivity.this).load(file).into(ivFace);
+                            getPic(endPath);*/
+                            Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+                            Tiny.getInstance().source(path).asFile().withOptions(options).compress(new FileCallback() {
+                                @Override
+                                public void callback(boolean isSuccess, String outfile, Throwable t) {
+                                    Bitmap bitmap = Base64FileUtils.fileToBitmap(outfile);
+                                    int bitmapDegree = getBitmapDegree(outfile);
+                                    Bitmap bitmap1 = rotateBitmapByDegree(bitmap, bitmapDegree);
+                                    ivFace.setImageBitmap(bitmap1);
+                                    //Glide.with(SW_FaceSearchingActivity.this).load(outfile).placeholder(R.drawable.sw_home_page_defect).into(ivFace);
+                                    llFace.setVisibility(View.GONE);
+                                    ivFace.setVisibility(View.VISIBLE);
+                                    LogUtils.e(outfile);
+                                    getPic(outfile);
+                                }
+                            });
 
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, os);
-                            Glide.with(SW_FaceSearchingActivity.this).load(file).into(ivFace);
-                            getPic(endPath);
                         } catch (Exception ex) {
                         }
 
@@ -333,11 +360,9 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             case REQUEST_ALBUM:
                 ContentResolver resolver = getContentResolver();
                 try {
-                    //小米手机路径转换
-                    String path = "";
+
                     if (data != null) {
                         Uri uri = data.getData();
-/*
                         if (!TextUtils.isEmpty(uri.getAuthority())) {
                             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
                             if (cursor != null) {
@@ -349,20 +374,41 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                             }
                         } else {
                             path = uri.getPath();
-                        }*/
+                        }
+                        /*InputStream inputStream = resolver.openInputStream(uri);
 
-                        InputStream inputStream = resolver.openInputStream(uri);
                         final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        int bitmapDegree = getBitmapDegree(path);
+                        Bitmap bitmap1 = rotateBitmapByDegree(bitmap, bitmapDegree);
                         FileOutputStream os = new FileOutputStream(endPath);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 40, os);
-
-                        ivFace.setImageBitmap(bitmap);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                        ivFace.setImageBitmap(bitmap1);
                         llFace.setVisibility(View.GONE);
                         ivFace.setVisibility(View.VISIBLE);
-                        LogUtils.e(endPath);
+                        LogUtils.e(uri.toString());
                         getPic(endPath);
+                        final String encode = Base64FileUtils.fileToBase64(path);
+                        LogUtils.e(encode);*/
+
+
+                        Tiny.FileCompressOptions options = new Tiny.FileCompressOptions();
+                        Tiny.getInstance().source(path).asFile().withOptions(options).compress(new FileCallback() {
+                            @Override
+                            public void callback(boolean isSuccess, String outfile, Throwable t) {
+                                Bitmap bitmap = Base64FileUtils.fileToBitmap(outfile);
+                                int bitmapDegree = getBitmapDegree(outfile);
+                                Bitmap bitmap1 = rotateBitmapByDegree(bitmap, bitmapDegree);
+                                ivFace.setImageBitmap(bitmap1);
+                                //Glide.with(SW_FaceSearchingActivity.this).load(outfile).placeholder(R.drawable.sw_home_page_defect).into(ivFace);
+                                llFace.setVisibility(View.GONE);
+                                ivFace.setVisibility(View.VISIBLE);
+                                LogUtils.e(outfile);
+                                getPic(path);
+                                //return the compressed file path
+                            }
+                        });
                     }
-                } catch (FileNotFoundException e) {
+                } catch (Exception e) {
 
 
                     e.printStackTrace();
@@ -371,95 +417,116 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         }
     }
 
-    private void getPic(String path) {
+    private String encode = "";
+
+    private void getPic(final String paths) {
         LoadingDialogUtils.show(SW_FaceSearchingActivity.this);
-        final String encode = Base64FileUtils.fileToBase64(path);
-        final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-        restfulApi.getFaceCrop("data:image/jpeg;base64," + encode).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SW_FaceCropBean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    encode = Base64FileUtils.fileToBase64(paths);
+                    //encode = Base64.encodeBase64String(getMulFileByPath(paths).getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onNext(SW_FaceCropBean sw_faceCropBean) {
-                        if (sw_faceCropBean.getRetCode() == 0) {
-                            list = sw_faceCropBean.getData();
-                            if (list.size() == 0) {
-                                ToastUtils.showLong("获取人脸失败");
-                            }
-                            for (int i = 0; i < list.size(); i++) {
-                                if (i == 0) {
-                                    list.get(i).setChecked(true);
-                                } else {
-                                    list.get(i).setChecked(false);
-                                }
-                            }
-                            rv.setAdapter(new BaseQuickAdapter<SW_FaceCropBean.DataBean, BaseViewHolder>(R.layout.sw_item_choose_face, list) {
+                    public void run() {
+                        final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(SW_FaceSearchingActivity.this));
+                        restfulApi.getFaceCrop("data:image/jpeg;base64," + encode).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<SW_FaceCropBean>() {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
+                                        compositeDisposable.add(d);
+                                    }
 
-                                @Override
-                                protected void convert(BaseViewHolder helper, final SW_FaceCropBean.DataBean item) {
-                                    onBind = true;
-                                    final int adapterPosition = helper.getAdapterPosition();
-                                    Bitmap bitmap = decode(item.getSmallImgBase64());
-                                    helper.setImageBitmap(R.id.iv_face, bitmap);
-                                    final CheckBox cb = helper.getView(R.id.cb);
-                                    final ImageView iv_img = helper.getView(R.id.iv_face);
-                                    iv_img.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            if (cb.isChecked()){
-                                                cb.setChecked(false);
-                                            }else {
-                                                cb.setChecked(true);
+                                    @Override
+                                    public void onNext(SW_FaceCropBean sw_faceCropBean) {
+                                        if (sw_faceCropBean.getRetCode() == 0) {
+                                            list = sw_faceCropBean.getData();
+                                            if (list.size() == 0) {
+                                                ToastUtils.showLong("获取人脸失败");
                                             }
-                                        }
-                                    });
-                                    cb.setChecked(item.isChecked());
-                                    onBind = false;
-                                    cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                        @Override
-                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                                            if (!onBind) {
-                                                if (b) {
-                                                    for (int i = 0; i < list.size(); i++) {
-                                                        if (i == adapterPosition) {
-                                                            list.get(i).setChecked(true);
-                                                        } else {
-                                                            list.get(i).setChecked(false);
-                                                        }
-                                                    }
-                                                    notifyDataSetChanged();
-                                                }else {
-                                                    for (int i = 0; i < list.size(); i++) {
-                                                        list.get(i).setChecked(false);
-                                                    }
+                                            for (int i = 0; i < list.size(); i++) {
+                                                if (i == 0) {
+                                                    list.get(i).setChecked(true);
+                                                } else {
+                                                    list.get(i).setChecked(false);
                                                 }
                                             }
+                                            rv.setAdapter(new BaseQuickAdapter<SW_FaceCropBean.DataBean, BaseViewHolder>(R.layout.sw_item_choose_face, list) {
+
+                                                @Override
+                                                protected void convert(BaseViewHolder helper, final SW_FaceCropBean.DataBean item) {
+                                                    onBind = true;
+                                                    final int adapterPosition = helper.getAdapterPosition();
+                                                    Bitmap bitmap = Base64FileUtils.base64ToBitmap(item.getSmallImgBase64());
+                                                    helper.setImageBitmap(R.id.iv_face, bitmap);
+                                                    final CheckBox cb = helper.getView(R.id.cb);
+                                                    final ImageView iv_img = helper.getView(R.id.iv_face);
+                                                    iv_img.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            if (cb.isChecked()) {
+                                                                cb.setChecked(false);
+                                                            } else {
+                                                                cb.setChecked(true);
+                                                            }
+                                                        }
+                                                    });
+                                                    cb.setChecked(item.isChecked());
+                                                    onBind = false;
+                                                    cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                                        @Override
+                                                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                                                            if (!onBind) {
+                                                                if (b) {
+                                                                    for (int i = 0; i < list.size(); i++) {
+                                                                        if (i == adapterPosition) {
+                                                                            list.get(i).setChecked(true);
+                                                                        } else {
+                                                                            list.get(i).setChecked(false);
+                                                                        }
+                                                                    }
+                                                                    notifyDataSetChanged();
+                                                                } else {
+                                                                    for (int i = 0; i < list.size(); i++) {
+                                                                        list.get(i).setChecked(false);
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            ToastUtils.showLong("获取人脸失败");
                                         }
-                                    });
-                                }
-                            });
-                        }else {
-                            ToastUtils.showLong(sw_faceCropBean.getMessage());
-                        }
-                    }
+                                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        LoadingDialogUtils.dismiss();
-                        LogUtils.e("onError:"+e.getMessage());
-                        ToastUtils.showLong("获取人脸失败");
-                    }
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        LoadingDialogUtils.dismiss();
+                                        LogUtils.e("onError:" + e.getMessage());
+                                        ToastUtils.showLong("获取人脸失败");
+                                    }
 
-                    @Override
-                    public void onComplete() {
-                        LoadingDialogUtils.dismiss();
-                        LogUtils.e("onComplete");
+                                    @Override
+                                    public void onComplete() {
+                                        LoadingDialogUtils.dismiss();
+                                        LogUtils.e("onComplete");
+                                    }
+                                });
                     }
                 });
+            }
+        }).start();
+
+        // LogUtils.e(encode);
+
     }
 
     private File createFile(Context context) {
@@ -492,7 +559,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             public void onTimeSelect(Date date) {
                 Date date1 = TimeUtils.string2Date(etime);
                 if (date.getTime() < date1.getTime()) {
-                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
                 } else {
                     ToastUtils.showShort("开始时间不能大于结束时间");
                     return;
@@ -511,7 +578,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
             public void onTimeSelect(Date date) {
                 Date date1 = TimeUtils.string2Date(stime);
                 if (date.getTime() > date1.getTime()) {
-                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("YYYY-MM-dd HH:mm:ss")));
+                    tvTime.setText(TimeUtils.date2String(date, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")));
                 } else {
                     ToastUtils.showShort("结束时间不能小于开始时间");
                     return;
@@ -561,36 +628,88 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
         return false;
     }
 
-    //图片转换成base64
-    private String encode(String path) {
-        //decode to bitmap
-        Bitmap bitmap = BitmapFactory.decodeFile(path);
-        //convert to byte array
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 40, baos);
-        byte[] bytes = baos.toByteArray();
 
-        //base64 encode
-        byte[] encode = Base64.encode(bytes, Base64.DEFAULT);
-        String encodeString = new String(encode);
-        return encodeString;
+
+    private int getBitmapDegree(String path) {
+        int degree = 0;
+        try {
+            // 从指定路径下读取图片，并获取其EXIF信息
+            ExifInterface exifInterface = new ExifInterface(path);
+            // 获取图片的旋转信息
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
     }
 
-    private Bitmap decode(String path) {
-        InputStream input = null;
-        byte[] bytes = Base64.decode(path, Base64.DEFAULT);
-        BitmapFactory.Options options=new BitmapFactory.Options();
-        options.inSampleSize = 8;
-        //Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        input = new ByteArrayInputStream(bytes);
-        SoftReference softRef = new SoftReference(BitmapFactory.decodeStream(input, null, options));
-        Bitmap bitmap = (Bitmap)softRef.get();
-        return bitmap;
+    public static Bitmap rotateBitmapByDegree(Bitmap bm, int degree) {
+        Bitmap returnBm = null;
+
+        // 根据旋转角度，生成旋转矩阵
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        try {
+            // 将原始图片按照旋转矩阵进行旋转，并得到新的图片
+            returnBm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+        } catch (OutOfMemoryError e) {
+        }
+        if (returnBm == null) {
+            returnBm = bm;
+        }
+        if (bm != returnBm) {
+            bm.recycle();
+        }
+        return returnBm;
+    }
+
+    private static MultipartFile getMulFileByPath(String picPath) {
+        FileItem fileItem = createFileItem(picPath);
+        MultipartFile mfile = new CommonsMultipartFile(fileItem);
+        return mfile;
+    }
+
+    private static FileItem createFileItem(String filePath) {
+        FileItemFactory factory = new DiskFileItemFactory(16, null);
+        String textFieldName = "textField";
+        int num = filePath.lastIndexOf(".");
+        String extFile = filePath.substring(num);
+        FileItem item = factory.createItem(textFieldName, "text/plain", true,
+                "MyFileName" + extFile);
+        File newfile = new File(filePath);
+        int bytesRead = 0;
+        byte[] buffer = new byte[8192];
+        try {
+            FileInputStream fis = new FileInputStream(newfile);
+            OutputStream os = item.getOutputStream();
+            while ((bytesRead = fis.read(buffer, 0, 8192))
+                    != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return item;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Tiny.getInstance().clearCompressDirectory();
         EventBus.getDefault().unregister(this);
         compositeDisposable.dispose();
     }

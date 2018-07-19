@@ -62,7 +62,7 @@ public class SqlietModel {
         ContentValues contentValues = new ContentValues();
         List<SW_DeviceCodeBean> list = queryAddress();
 
-        if (list != null && list.size() != 0) {
+        if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getDevCode().equals(devcode)) {
                     flag = 1;

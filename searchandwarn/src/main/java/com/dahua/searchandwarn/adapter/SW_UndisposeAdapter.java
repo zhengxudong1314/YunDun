@@ -1,6 +1,5 @@
 package com.dahua.searchandwarn.adapter;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -12,10 +11,10 @@ import android.widget.RelativeLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
+import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.base.SqlietModel;
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.modules.warning.activity.SW_DisposeDetailsActivity;
 import com.dahua.searchandwarn.modules.warning.activity.SW_IgnoreActivity;
 import com.dahua.searchandwarn.modules.warning.activity.SW_WarningDetailsActivity;
@@ -107,7 +106,7 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 intent = new Intent(context, SW_IgnoreActivity.class);
                 intent.putExtra("alarmId", item.getAlarmId());
-                intent.putExtra("operator", SW_UserLoginBean.USERNANE);
+                intent.putExtra("operator", SW_Constracts.getUserName(context));
                 intent.putExtra("position", position+"");
                 context.startActivity(intent);
                 notifyDataSetChanged();
@@ -126,7 +125,7 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 list = sqlietModel.queryAll();
                 intent = new Intent(context, SW_DisposeDetailsActivity.class);
                 intent.putExtra("alarmId", item.getAlarmId());
-                intent.putExtra("operator", SW_UserLoginBean.USERNANE);
+                intent.putExtra("operator", SW_Constracts.getUserName(context));
                 intent.putExtra("position", position+"");
                 context.startActivity(intent);
                 notifyDataSetChanged();
@@ -157,9 +156,11 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 sqlietModel.insertData(item.getAlarmId());
                 list = sqlietModel.queryAll();
                 intent = new Intent();
-                intent.setComponent(new ComponentName("com.mm.dss", "com.mm.dss.map.BaiduMapActivity"));
-                intent.putExtra("longitude", item.getDeviceX());//经度
-                intent.putExtra("latitued", item.getDeviceY());//纬度
+//                intent.setComponent(new ComponentName("com.mm.dss", "com.mm.dss.map.BaiduMapActivity"));
+                intent.setAction("com.mm.dss.alarm.map");
+                intent.putExtra("longtitude", item.getDeviceX());//经度
+                intent.putExtra("latitude", item.getDeviceY());//纬度
+
                 intent.putExtra("name", "dahua");
                 context.startActivity(intent);
                 notifyDataSetChanged();

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.LogUtils;
@@ -44,8 +43,7 @@ public class UnReadService extends Service {
         sqlietModel = new SqlietModel(this);
         compositeDisposable = new CompositeDisposable();
         Map<String, String> map = new HashMap<>();
-        // todo  替换用户名为 SW_UserLoginBean.USERNANE
-        map.put("appUser", SW_UserLoginBean.USERNANE);
+        map.put("appUser", SW_Constracts.getUserName(this));
         map.put("pageNum", "1");
         map.put("pageSize", "50");
         getNetData(map);

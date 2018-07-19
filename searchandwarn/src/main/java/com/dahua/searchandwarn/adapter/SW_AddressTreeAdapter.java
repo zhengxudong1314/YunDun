@@ -114,17 +114,15 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.B
             }
         });
 
-
         onBind = false;
-
         cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
                 if (!onBind) {
                     item.setChecked(b);
                     isChecked(b, item);
                     notifyDataSetChanged();
+
                 }
 
             }
@@ -132,12 +130,11 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.B
     }
 
     private void filter(SW_AddressTreeBean.BaseInfo item) {
-
-        if (item.getChildren()!=null){
+        if (item.getChildren() != null) {
             for (int i = 0; i < item.getChildren().size(); i++) {
-                if (item.getChildren().get(i).isChecked()){
+                if (item.getChildren().get(i).isChecked()) {
                     item.setChecked(true);
-                }else {
+                } else {
                     item.setChecked(false);
                     break;
                 }
@@ -162,6 +159,6 @@ public class SW_AddressTreeAdapter extends BaseQuickAdapter<SW_AddressTreeBean.B
                 }
             }
         }
-
+        notifyDataSetChanged();
     }
 }

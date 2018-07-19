@@ -11,18 +11,14 @@ import android.widget.ImageView;
 
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_FaceCropBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.Base64FileUtils;
 import com.dahua.searchandwarn.utils.LogUtils;
-import com.dahua.searchandwarn.utils.Utils;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class TestActivity extends AppCompatActivity {
@@ -34,7 +30,7 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        Utils.init(this.getApplication());
+        //Utils.init(this.getApplication());
         Button xiangce = (Button) findViewById(R.id.xiangce);
         Button xiangji = (Button) findViewById(R.id.xiangji);
         iv1 = (ImageView) findViewById(R.id.iv1);
@@ -50,7 +46,7 @@ public class TestActivity extends AppCompatActivity {
         xiangji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+            startActivity(new Intent(TestActivity.this,MainActivity.class));
             }
         });
 
@@ -82,18 +78,7 @@ public class TestActivity extends AppCompatActivity {
                 String path = cursor.getString(column_index);
                 final String s = Base64FileUtils.fileToBase64(path);*/
                 final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-                restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-                        .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_FaceCropBean>>() {
-                            @Override
-                            public ObservableSource<SW_FaceCropBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-                                if (sw_userLoginBean.getRetCode() == 0) {
-                                    return restfulApi.getFaceCrop(null);
-                                } else {
-                                    return null;
-                                }
-                            }
-                        })
-                        .subscribeOn(Schedulers.io())
+                restfulApi.getFaceCrop(null).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<SW_FaceCropBean>() {
                             @Override

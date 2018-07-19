@@ -26,6 +26,7 @@ import com.dahua.searchandwarn.model.SW_SingleWarnBean;
 import com.dahua.searchandwarn.model.SW_TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
+import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.ToastUtils;
 import com.dahua.searchandwarn.utils.TwoPointUtils;
 
@@ -107,6 +108,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                             }
                             tvSite.setText(datas.getDeviceName());
                             tvPushTime.setText(datas.getSaveTime());
+                            LogUtils.e(datas.getSmallImg());
                             Glide.with(SW_DisposeDetailsActivity.this).load(datas.getOriginalImg()).placeholder(R.drawable.sw_home_page_defect).into(ivTwo);
                             Glide.with(SW_DisposeDetailsActivity.this).load(datas.getSmallImg()).placeholder(R.drawable.sw_home_page_defect).into(ivOne);
                             Glide.with(SW_DisposeDetailsActivity.this).load(datas.getBigImg()).placeholder(R.drawable.sw_home_page_defect).into(ivThree);
@@ -234,24 +236,24 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                     public void onNext(SW_DisposeBean sw_disposeBean) {
                         if (sw_disposeBean.getRetCode() == 0) {
                             if (resultType == 1) {
-                                EventBus.getDefault().postSticky(new SW_TypeBean(position));
+                                EventBus.getDefault().postSticky(new SW_TypeBean(position,"已消警"));
+                            }else {
+                                EventBus.getDefault().postSticky(new SW_TypeBean(position,"处理中"));
                             }
-                            LoadingDialogUtils.dismiss();
                             finish();
                         } else {
-                            LoadingDialogUtils.dismiss();
                             ToastUtils.showLong(sw_disposeBean.getMessage());
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        LoadingDialogUtils.dismiss();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        LoadingDialogUtils.dismiss();
                     }
                 });
     }

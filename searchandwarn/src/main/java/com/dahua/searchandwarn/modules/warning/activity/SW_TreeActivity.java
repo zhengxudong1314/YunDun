@@ -53,6 +53,7 @@ public class SW_TreeActivity extends AppCompatActivity {
     private List<SW_AddressTreeBean.BaseInfo> baseInfos;
     private List<SW_AddressTreeBean.BaseInfo> allBaseInfos;
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,10 +177,9 @@ public class SW_TreeActivity extends AppCompatActivity {
             for (SW_AddressTreeBean.BaseInfo baseInfo : bean.getChildren()) {
                 allBaseInfos.add(baseInfo);
                 baseInfo.setOrg_id(bean.getOrgCode());
-                if (!TextUtils.isEmpty(baseInfo.getDevName())) {
+                if (!TextUtils.isEmpty(baseInfo.getDevName()) && !TextUtils.isEmpty(baseInfo.getDevCode())) {
                     sqlietModel.insertAddress(baseInfo.getDevName(), baseInfo.getDevCode());
                 }
-
                 filter(baseInfo);
             }
         }
@@ -197,18 +197,21 @@ public class SW_TreeActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(SW_AddressTreeBean sw_addressTreeBean) {
-                        baseInfos = sw_addressTreeBean.getData();
-                        SW_AddressTreeAdapter treeAdapter = new SW_AddressTreeAdapter(SW_TreeActivity.this, R.layout.sw_item_address_tree, baseInfos);
-                        rv.setAdapter(treeAdapter);
-
-                        for (SW_AddressTreeBean.BaseInfo info : baseInfos) {
-                            filter(info);
+                        if (sw_addressTreeBean.getRetCode() == 0) {
+                            baseInfos = sw_addressTreeBean.getData();
+                            if (baseInfos != null) {
+                                SW_AddressTreeAdapter treeAdapter = new SW_AddressTreeAdapter(SW_TreeActivity.this, R.layout.sw_item_address_tree, baseInfos);
+                                rv.setAdapter(treeAdapter);
+                                for (SW_AddressTreeBean.BaseInfo info : baseInfos) {
+                                    filter(info);
+                                }
+                            }
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                      progressDialog.dismiss();
+                        progressDialog.dismiss();
                         ToastUtils.showShort("组织树获取失败");
                     }
 
@@ -225,7 +228,7 @@ public class SW_TreeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         compositeDisposable.dispose();
-        if (progressDialog!=null){
+        if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
         }

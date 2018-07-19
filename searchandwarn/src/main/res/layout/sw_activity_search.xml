@@ -190,6 +190,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:maxLength="50"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
@@ -198,6 +199,7 @@
                 android:textColor="@color/tvColorOne" />
 
             <EditText
+                android:maxLength="18"
                 android:id="@+id/et_card_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,7 +209,8 @@
                 android:drawableRight="@drawable/sw_icon_right"
                 android:gravity="right"
                 android:hint="@string/input"
-                android:inputType="text"
+                android:inputType="number"
+                android:digits="0123456789x"
                 android:textColor="@color/tvColorTwo"
                 android:textSize="14sp" />
         </LinearLayout>

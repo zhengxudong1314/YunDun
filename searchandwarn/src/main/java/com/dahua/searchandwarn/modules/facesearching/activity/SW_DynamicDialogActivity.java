@@ -22,6 +22,11 @@ public class SW_DynamicDialogActivity extends AppCompatActivity {
     private TextView tvsite;
     private ImageView ivSmall;
     private ImageView ivBig;
+    private TextView tvName;
+    private TextView tvCardId;
+    private TextView tvHuji;
+    private TextView tvJiguan;
+    private TextView tvChangshang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,19 +35,35 @@ public class SW_DynamicDialogActivity extends AppCompatActivity {
         initView();
         dataBean = (SW_DynamicBean.DataBean) getIntent().getSerializableExtra("datas");
         tvTitle.setText("动态对比");
-        tvSimilarity.setText(TwoPointUtils.doubleToString(Double.valueOf(dataBean.getSimilarity()))+"%");
+        tvSimilarity.setText(TwoPointUtils.doubleToString(Double.valueOf(dataBean.getSimilarity())) + "%");
         tvTime.setText(dataBean.getFaceTime());
-        tvAge.setText(dataBean.getAge());
+        if (dataBean.getAge() > 0) {
+            tvAge.setText(dataBean.getAge() + "");
+        }
         String sex = dataBean.getSex();
-        if (sex.equals("0")){
+        if (sex.equals("0")) {
             tvSex.setText("男");
-        }else {
+        } else {
             tvSex.setText("女");
         }
         tvsite.setText(dataBean.getDevName());
-
-        Glide.with(this).load(dataBean.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivSmall);
-        Glide.with(this).load(dataBean.getSource_image2()).placeholder(R.drawable.sw_icon_img_unselected).into(ivBig);
+        if (dataBean.getName() != null) {
+            tvName.setText(dataBean.getName());
+        }
+        if (dataBean.getIdCardCode() != null) {
+            tvCardId.setText(dataBean.getIdCardCode());
+        }
+        if (dataBean.getOriginPlace() != null) {
+            tvJiguan.setText(dataBean.getOriginPlace());
+        }
+        if (dataBean.getHousehold() != null) {
+            tvHuji.setText(dataBean.getHousehold());
+        }
+        if (dataBean.getFactoryName() != null) {
+            tvChangshang.setText(dataBean.getFactoryName());
+        }
+        Glide.with(this).load(dataBean.getSource_image1()).placeholder(R.drawable.sw_home_page_defect).into(ivSmall);
+        Glide.with(this).load(dataBean.getSource_image2()).placeholder(R.drawable.sw_home_page_defect).into(ivBig);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +80,11 @@ public class SW_DynamicDialogActivity extends AppCompatActivity {
         tvsite = (TextView) findViewById(R.id.tv_site);
         tvSimilarity = (TextView) findViewById(R.id.tv_similarity);
         tvTime = (TextView) findViewById(R.id.tv_time);
+        tvName = (TextView) findViewById(R.id.tv_name);
+        tvCardId = (TextView) findViewById(R.id.tv_cardId);
+        tvHuji = (TextView) findViewById(R.id.tv_huji);
+        tvJiguan = (TextView) findViewById(R.id.tv_jiguan);
+        tvChangshang = (TextView) findViewById(R.id.tv_changshang);
         ivSmall = (ImageView) findViewById(R.id.iv_small);
         ivBig = (ImageView) findViewById(R.id.iv_big);
 

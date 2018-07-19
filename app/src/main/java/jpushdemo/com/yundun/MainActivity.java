@@ -1,6 +1,7 @@
 package jpushdemo.com.yundun;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SharedPreferences sp = getSharedPreferences("dahua", MODE_PRIVATE);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putString("name", "zxd").commit();
         compositeDisposable = new CompositeDisposable();
         rv = (RecyclerView) findViewById(R.id.rv);
         Utils.init(this.getApplication());
@@ -100,45 +104,6 @@ public class MainActivity extends AppCompatActivity {
         bt4.setText(bean.getNum() + "");
     }
 
-
-
-//    private void getNetData() {
-//        final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
-//        restfulApi.userLogin(SW_UserLoginBean.USERNANE, SW_UserLoginBean.PASSWORD)
-//                .flatMap(new Function<SW_UserLoginBean, ObservableSource<SW_AddressTreeBean>>() {
-//                    @Override
-//                    public ObservableSource<SW_AddressTreeBean> apply(SW_UserLoginBean sw_userLoginBean) throws Exception {
-//                        if (sw_userLoginBean.getRetCode() == 0) {
-//                            return restfulApi.getAddressTree();
-//                        } else {
-//                            return null;
-//                        }
-//                    }
-//                }).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<SW_AddressTreeBean>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//                        compositeDisposable.add(d);
-//                    }
-//
-//                    @Override
-//                    public void onNext(final SW_AddressTreeBean sw_addressTreeBean) {
-//                        LogUtils.e(sw_addressTreeBean.toString());
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
-//
-//    }
 
     @Override
     protected void onDestroy() {

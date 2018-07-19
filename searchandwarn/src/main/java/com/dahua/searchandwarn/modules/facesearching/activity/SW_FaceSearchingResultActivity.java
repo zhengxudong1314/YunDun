@@ -14,14 +14,12 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.dahua.searchandwarn.R;
-import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_DynamicBean;
 import com.dahua.searchandwarn.model.SW_FaceParams;
 import com.dahua.searchandwarn.model.SW_StaticBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.TwoPointUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,14 +51,15 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     private String operator;
     private ImageView ivBack;
     private TextView tvTitle;
-    private TextView tvStaticNo;
-    private TextView tvDymNo;
     private ImageView ivTu;
     private ImageView ivZhou;
     private RecyclerView rvStatic;
     private RecyclerView rvDynamic;
-    private List<SW_DynamicBean.DataBean> data;
+    private List<SW_DynamicBean.DataBean> dataTu;
+    private List<SW_DynamicBean.DataBean> dataZhou;
     private ProgressDialog progressDialog;
+    private TextView tvDynamic;
+    private TextView tvStatic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +84,8 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         ivZhou = (ImageView) findViewById(R.id.iv_zhou);
         ivTu = (ImageView) findViewById(R.id.iv_tu);
         tvTitle = (TextView) findViewById(R.id.tv_title);
-        tvStaticNo = (TextView) findViewById(R.id.tv_static_no);
-        tvDymNo = (TextView) findViewById(R.id.tv_dym_no);
+        tvStatic = (TextView) findViewById(R.id.tv_static);
+        tvDynamic = (TextView) findViewById(R.id.tv_dynamic);
         rvStatic = (RecyclerView) findViewById(R.id.rv_static);
         rvDynamic = (RecyclerView) findViewById(R.id.rv_dynamic);
         ivTu.setOnClickListener(this);
@@ -102,7 +101,6 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
         map.put("deviceCodes", deviceCodes);
         map.put("imageBase64", imageBase64);
         map.put("operator", operator);
-        LogUtils.e(similarity + ":" + operator);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
         restfulApi.getDynamicData(map).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -115,21 +113,23 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                     @Override
                     public void onNext(SW_DynamicBean sw_dynamicBean) {
                         if (sw_dynamicBean.getRetCode() == 0) {
-                            data = sw_dynamicBean.getData();
-                            if (data == null || data.size() == 0) {
-                                tvDymNo.setVisibility(View.VISIBLE);
+                            dataTu = sw_dynamicBean.getData();
+                            dataZhou = sw_dynamicBean.getData();
+                            if (dataTu == null || dataTu.size() == 0) {
+                                tvDynamic.setVisibility(View.VISIBLE);
+                                rvDynamic.setVisibility(View.GONE);
                             } else {
+                                tvDynamic.setVisibility(View.GONE);
+                                rvDynamic.setVisibility(View.VISIBLE);
                                 changeRvTu();
                             }
                         } else {
-                            tvDymNo.setVisibility(View.VISIBLE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
-                        tvDymNo.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -140,16 +140,16 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     }
 
     private void changeRvTu() {
-        if (data != null) {
-            BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_dymnic_compare, data) {
+        if (dataTu != null) {
+            BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_dymnic_compare, dataTu) {
 
                 @Override
                 protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
                     helper.setText(R.id.tv_time, item.getFaceTime())
                             .setText(R.id.tv_similarity, TwoPointUtils.doubleToString(Double.valueOf(item.getSimilarity())) + "%")
-                            .setText(R.id.tv_site, item.getSex());
+                            .setText(R.id.tv_site, item.getDevName());
                     ImageView ivImg = helper.getView(R.id.iv_img);
-                    Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
+                    Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_home_page_defect).into(ivImg);
                 }
             };
             rvDynamic.setAdapter(dynamicAdapter);
@@ -157,7 +157,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                     Intent intent = new Intent(SW_FaceSearchingResultActivity.this, SW_DynamicDialogActivity.class);
-                    intent.putExtra("datas", data.get(position));
+                    intent.putExtra("datas", dataTu.get(position));
                     startActivity(intent);
                 }
             });
@@ -165,16 +165,16 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     }
 
     private void changeRvZhou() {
-        if (data != null) {
-            Collections.sort(data, new DateComparator());
-            BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_time_line_style, data) {
+        if (dataZhou != null) {
+            Collections.sort(dataZhou, new DateComparator());
+            BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder> dynamicAdapter = new BaseQuickAdapter<SW_DynamicBean.DataBean, BaseViewHolder>(R.layout.sw_item_time_line_style, dataZhou) {
 
                 @Override
                 protected void convert(BaseViewHolder helper, SW_DynamicBean.DataBean item) {
                     helper.setText(R.id.tv_time, item.getFaceTime())
-                            .setText(R.id.tv_site, item.getSex());
+                            .setText(R.id.tv_site, item.getDevName());
                     ImageView iv_small = helper.getView(R.id.iv_small);
-                    Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_icon_img_unselected).into(iv_small);
+                    Glide.with(SW_FaceSearchingResultActivity.this).load(item.getSource_image1()).placeholder(R.drawable.sw_home_page_defect).into(iv_small);
                 }
             };
             rvDynamic.setAdapter(dynamicAdapter);
@@ -182,7 +182,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                     Intent intent = new Intent(SW_FaceSearchingResultActivity.this, SW_DynamicDialogActivity.class);
-                    intent.putExtra("datas", data.get(position));
+                    intent.putExtra("datas", dataZhou.get(position));
                     startActivity(intent);
                 }
             });
@@ -192,7 +192,7 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     private void getStaticData() {
         final Map<String, String> map = new HashMap<>();
         map.put("similarity", similarity);
-        map.put("imageBase64", imageBase64);
+        map.put("imgBase64", imageBase64);
         map.put("operator", operator);
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(this));
         restfulApi.getStaticData(map).subscribeOn(Schedulers.io())
@@ -208,8 +208,11 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                         if (sw_staticBean.getRetCode() == 0) {
                             final List<SW_StaticBean.DataBean> data = sw_staticBean.getData();
                             if (data == null || data.size() == 0) {
-                                tvStaticNo.setVisibility(View.VISIBLE);
+                                tvStatic.setVisibility(View.VISIBLE);
+                                rvStatic.setVisibility(View.GONE);
                             } else {
+                                tvStatic.setVisibility(View.GONE);
+                                rvStatic.setVisibility(View.VISIBLE);
                                 BaseQuickAdapter<SW_StaticBean.DataBean, BaseViewHolder> staticAdapter = new BaseQuickAdapter<SW_StaticBean.DataBean, BaseViewHolder>(R.layout.sw_item_static_compare, data) {
 
                                     @Override
@@ -218,6 +221,8 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                                                 .setText(R.id.tv_similarity, TwoPointUtils.doubleToString(item.getSimilarity()) + "%")
                                                 .setText(R.id.tv_id, item.getCardNum())
                                                 .setText(R.id.tv_type, item.getLibName());
+                                        ImageView iv_img = helper.getView(R.id.iv_img);
+                                        Glide.with(SW_FaceSearchingResultActivity.this).load(item.getFace()).placeholder(R.drawable.sw_home_page_defect).into(iv_img);
 
                                     }
                                 };
@@ -232,14 +237,12 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
                                 });
                             }
                         } else {
-                            tvStaticNo.setVisibility(View.VISIBLE);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         progressDialog.dismiss();
-                        tvStaticNo.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -287,8 +290,6 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
     }
 
     private static class DateComparator implements Comparator<SW_DynamicBean.DataBean> {
-
-
         @Override
         public int compare(SW_DynamicBean.DataBean dataBean, SW_DynamicBean.DataBean t1) {
             Date date1 = stringToDate(dataBean.getFaceTime());

@@ -3,12 +3,10 @@ package com.dahua.searchandwarn.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.dahua.searchandwarn.base.MqttUtils;
-import com.dahua.searchandwarn.base.UnReadService;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
@@ -40,8 +38,8 @@ public final class Utils {
         MqttUtils mqttUtils = new MqttUtils();
         mqttUtils.connectMqtt(app);
         Utils.sApplication = app;
-        Intent intent = new Intent(app, UnReadService.class);
-        app.startService(intent);
+        /*Intent intent = new Intent(app, UnReadService.class);
+        app.startService(intent);*/
         app.registerActivityLifecycleCallbacks(mCallbacks);
     }
 

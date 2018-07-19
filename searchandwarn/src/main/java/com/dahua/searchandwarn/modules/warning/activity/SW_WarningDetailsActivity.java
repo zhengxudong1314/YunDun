@@ -15,17 +15,14 @@ import com.dahua.searchandwarn.adapter.SW_LogAdapter;
 import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_SingleWarnBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
 import com.dahua.searchandwarn.utils.TwoPointUtils;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class SW_WarningDetailsActivity extends AppCompatActivity implements View.OnClickListener {

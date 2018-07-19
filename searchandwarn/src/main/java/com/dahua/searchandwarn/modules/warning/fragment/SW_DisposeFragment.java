@@ -18,17 +18,20 @@ import com.dahua.searchandwarn.adapter.SW_DisposeAdapter;
 import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,8 +114,7 @@ public class SW_DisposeFragment extends Fragment {
 
     private void getNetData() {
         final Map<String, String> map = new HashMap<>();
-        // todo  替换用户名为 SW_UserLoginBean.USERNANE
-        map.put("appUser", SW_UserLoginBean.USERNANE);
+        map.put("appUser", SW_Constracts.getUserName(getActivity()));
         map.put("pageNum", pageNum+"");
         map.put("pageSize", "50");
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(getActivity()));
@@ -137,6 +139,7 @@ public class SW_DisposeFragment extends Fragment {
                                     disposeData.add(datas.get(i));
                                 }
                             }
+                            Collections.sort(disposeData, new SW_DisposeFragment.DateComparator());
                             disposeAdapter = new SW_DisposeAdapter(getActivity(), R.layout.sw_item_dispose, disposeData);
                             rv.setLayoutManager(linearLayoutManager);
                             if (disposeData == null || disposeData.size() == 0) {
@@ -171,13 +174,32 @@ public class SW_DisposeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     public void onMoon(SW_HistoryWarnBean.DataBean dataBean){
-        LogUtils.e(dataBean.toString());
         disposeData.add(0,dataBean);
         if (disposeAdapter!=null){
             disposeAdapter.notifyDataSetChanged();
         }
     }
 
+    private static class DateComparator implements Comparator<SW_HistoryWarnBean.DataBean> {
+
+        @Override
+        public int compare(SW_HistoryWarnBean.DataBean dataBean, SW_HistoryWarnBean.DataBean t1) {
+            Date date1 = stringToDate(dataBean.getSaveTime());
+            Date date2 = stringToDate(t1.getSaveTime());
+            // 对日期字段进行升序，如果欲降序可采用after方法
+            if (date1.before(date2)) {
+                return 1;
+            }
+            return -1;
+        }
+    }
+
+    public static Date stringToDate(String dateString) {
+        ParsePosition position = new ParsePosition(0);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateValue = simpleDateFormat.parse(dateString, position);
+        return dateValue;
+    }
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);

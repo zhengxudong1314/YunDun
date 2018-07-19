@@ -22,25 +22,28 @@ import com.dahua.searchandwarn.base.SqlietModel;
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
 import com.dahua.searchandwarn.model.SW_NewMessageBean;
 import com.dahua.searchandwarn.model.SW_TypeBean;
-import com.dahua.searchandwarn.model.SW_UserLoginBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
+import com.dahua.searchandwarn.utils.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -65,6 +68,7 @@ public class SW_UndisposeFragment extends Fragment {
     private TextView tvLoading;
     private ProgressBar pbLoading;
     private int pageNum = 1;
+    private TextView tv_ignore;
 
     @Nullable
     @Override
@@ -82,6 +86,7 @@ public class SW_UndisposeFragment extends Fragment {
         loadingMore = (LinearLayout) view.findViewById(R.id.ll_loading_more);
         tvLoading = (TextView) view.findViewById(R.id.tv_loading);
         pbLoading = (ProgressBar) view.findViewById(R.id.pb_loading);
+        tv_ignore = (TextView) view.findViewById(R.id.tv_ignore);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         sqlietModel = new SqlietModel(getActivity());
         tvNoData = (TextView) view.findViewById(R.id.tv_no_data);
@@ -90,7 +95,7 @@ public class SW_UndisposeFragment extends Fragment {
         undisposeData = new ArrayList<>();
         rv.setLayoutManager(linearLayoutManager);
         getNetData();
-        undisposeAdapter = new SW_UndisposeAdapter(getActivity(), R.layout.sw_item_undispose_unread, undisposeData, list);
+
 
 
         tvLoading.setOnClickListener(new View.OnClickListener() {
@@ -125,11 +130,9 @@ public class SW_UndisposeFragment extends Fragment {
     }
 
 
-
     private void getNetData() {
         final Map<String, String> map = new HashMap<>();
-        // todo  替换用户名为 SW_UserLoginBean.USERNANE
-        map.put("appUser", SW_UserLoginBean.USERNANE);
+        map.put("appUser", SW_Constracts.getUserName(getActivity()));
         map.put("pageNum", pageNum + "");
         map.put("pageSize", "50");
         final SW_RestfulApi restfulApi = SW_RestfulClient.getInstance().getRestfulApi(SW_Constracts.getBaseUrl(getActivity()));
@@ -146,15 +149,15 @@ public class SW_UndisposeFragment extends Fragment {
                     public void onNext(SW_HistoryWarnBean historyWarnBean) {
                         int retCode = historyWarnBean.getRetCode();
                         if (retCode == 0) {
-
                             loadingMore.setVisibility(View.GONE);
-                            LoadingDialogUtils.dismiss();
                             List<SW_HistoryWarnBean.DataBean> datas = historyWarnBean.getData();
                             for (int i = 0; i < datas.size(); i++) {
                                 if (datas.get(i).getStatus().equals("待处理") || datas.get(i).getStatus().equals("处理中")) {
                                     undisposeData.add(datas.get(i));
                                 }
                             }
+                            Collections.sort(undisposeData, new DateComparator());
+                            undisposeAdapter = new SW_UndisposeAdapter(getActivity(), R.layout.sw_item_undispose_unread, undisposeData, list);
                             if (undisposeData == null || undisposeData.size() == 0) {
                                 tvNoData.setVisibility(View.VISIBLE);
                             } else {
@@ -162,10 +165,7 @@ public class SW_UndisposeFragment extends Fragment {
                                 rv.setAdapter(undisposeAdapter);
                             }
 
-                        } else {
-                            LoadingDialogUtils.dismiss();
                         }
-
 
                     }
 
@@ -177,7 +177,7 @@ public class SW_UndisposeFragment extends Fragment {
 
                     @Override
                     public void onComplete() {
-
+                        LoadingDialogUtils.dismiss();
 
                     }
                 });
@@ -193,21 +193,46 @@ public class SW_UndisposeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onMoon(SW_TypeBean SWTypeBean) {
-        if (SWTypeBean.getPosition()!="false"){
-            int p = Integer.valueOf(SWTypeBean.getPosition());
+        int p = Integer.valueOf(SWTypeBean.getPosition());
+        if (SWTypeBean.getStatus().equals("处理中")) {
+            undisposeData.get(p).setStatus("处理中");
+        } else {
             EventBus.getDefault().postSticky(undisposeData.get(p));
             undisposeData.remove(p);
-            undisposeAdapter.notifyDataSetChanged();
         }
+        undisposeAdapter.notifyDataSetChanged();
+
+
     }
 
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onNewMessage(SW_NewMessageBean newMessageBean) {
-        if (newMessageBean.getNewMessage()==0){
+        if (newMessageBean.getNewMessage() == 0) {
             undisposeData.clear();
-            pageNum=1;
+            pageNum = 1;
             getNetData();
         }
+    }
+
+    private static class DateComparator implements Comparator<SW_HistoryWarnBean.DataBean> {
+
+        @Override
+        public int compare(SW_HistoryWarnBean.DataBean dataBean, SW_HistoryWarnBean.DataBean t1) {
+            Date date1 = stringToDate(dataBean.getSaveTime());
+            Date date2 = stringToDate(t1.getSaveTime());
+            // 对日期字段进行升序，如果欲降序可采用after方法
+            if (date1.before(date2)) {
+                return 1;
+            }
+            return -1;
+        }
+    }
+
+    public static Date stringToDate(String dateString) {
+        ParsePosition position = new ParsePosition(0);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dateValue = simpleDateFormat.parse(dateString, position);
+        return dateValue;
     }
 }

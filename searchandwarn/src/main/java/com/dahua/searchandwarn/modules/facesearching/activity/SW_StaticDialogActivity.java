@@ -33,7 +33,7 @@ public class SW_StaticDialogActivity extends AppCompatActivity {
         tvName.setText(datas.getName());
         tvCardId.setText(datas.getCardNum());
         tvKuName.setText(datas.getLibName());
-        Glide.with(this).load(datas.getFace()).placeholder(R.drawable.sw_icon_img_unselected).into(ivImg);
+        Glide.with(this).load(datas.getFace()).placeholder(R.drawable.sw_home_page_defect).into(ivImg);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

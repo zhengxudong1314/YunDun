@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
-    <application>
+    <application android:largeHeap="true">
         <activity android:name=".modules.warning.activity.SW_WarningDetailsActivity" />
         <activity
             android:name=".modules.warning.activity.SW_SearchActivity"
@@ -33,8 +33,7 @@
         <activity android:name=".modules.facesearching.activity.SW_DynamicDialogActivity" />
         <activity android:name=".modules.warning.activity.SW_TreeActivity"></activity>
 
-        <service android:name="com.dahua.searchandwarn.base.UnReadService">
-        </service>
+
     </application>
 
 </manifest>
