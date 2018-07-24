@@ -24,7 +24,6 @@ import com.dahua.searchandwarn.model.SW_NewMessageBean;
 import com.dahua.searchandwarn.model.SW_TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.dahua.searchandwarn.utils.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -97,7 +96,6 @@ public class SW_UndisposeFragment extends Fragment {
         getNetData();
 
 
-
         tvLoading.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,7 +104,9 @@ public class SW_UndisposeFragment extends Fragment {
                 tvLoading.setText("加载中");
                 tvLoading.setFocusable(false);
                 getNetData();
-                undisposeAdapter.notifyDataSetChanged();
+                if (undisposeAdapter != null) {
+                    undisposeAdapter.notifyDataSetChanged();
+                }
             }
         });
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -208,7 +208,7 @@ public class SW_UndisposeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onNewMessage(SW_NewMessageBean newMessageBean) {
-        if (newMessageBean.getNewMessage() == 0) {
+        if ((int)newMessageBean.getNewMessage() == 0) {
             undisposeData.clear();
             pageNum = 1;
             getNetData();

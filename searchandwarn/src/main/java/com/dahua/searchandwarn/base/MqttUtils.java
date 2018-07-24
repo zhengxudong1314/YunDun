@@ -5,22 +5,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 
 import com.dahua.searchandwarn.model.SW_NewMessageBean;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
 import com.dahua.searchandwarn.modules.warning.activity.SW_WarningAccpetActivity;
+import com.dahua.searchandwarn.service.IMqttMsgListener;
+import com.dahua.searchandwarn.service.MqttService;
 import com.dahua.searchandwarn.utils.LogUtils;
 import com.google.gson.Gson;
 
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttTopic;
-import org.eclipse.paho.client.mqttv3.internal.MemoryPersistence;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -31,27 +27,32 @@ import org.greenrobot.eventbus.ThreadMode;
  * 日期：2018/5/20
  */
 
-public class MqttUtils {
+public class MqttUtils implements IMqttMsgListener {
     //tcp://172.6.3.111:1883
     public static final String HOST = "tcp://10.23.10.35:1883";
     public static final String TOPIC = "DAHUA";
-    private static String clientid ;
+    private static String clientid;
     private static String userName = "admin";
     private static String passWord = "admin";
     private static MqttClient client;
     private static MqttConnectOptions options;
     private int num;
+    private Context mContext;
 
     public MqttUtils() {
         EventBus.getDefault().register(this);
     }
-    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
-    public void onMood(SW_UnReadNum num){
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void onMood(SW_UnReadNum num) {
         this.num = num.getNum();
     }
-    public void connectMqtt(final Context context){
 
-        try {
+    public void connectMqtt(final Context context, String ip) {
+        this.mContext = context;
+        MqttService.init(ip, 1883, new String[]{TOPIC}, this);
+        MqttService.actionRestart(context);
+        /*try {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             clientid = telephonyManager.getDeviceId();
             client = new MqttClient(HOST, clientid, new MemoryPersistence());
@@ -69,9 +70,9 @@ public class MqttUtils {
             options.setKeepAliveInterval(20);
             // 设置回调
 
-           /* MqttTopic topic = client.getTopic(TOPIC);
+           *//* MqttTopic topic = client.getTopic(TOPIC);
             //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
-            options.setWill(topic, "close".getBytes(), 2, true);*/
+            options.setWill(topic, "close".getBytes(), 2, true);*//*
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -97,11 +98,11 @@ public class MqttUtils {
                             public void messageArrived(MqttTopic mqttTopic, MqttMessage mqttMessage) throws Exception {
 
                                 num++;
-//                                ToastUtils.showLong(mqttMessage.getPayload().toString());
                                 LogUtils.e("接收消息主题 :"+mqttTopic.getName());
                                 LogUtils.e("接收消息Qos  :"+mqttMessage.getQos());
                                 String s = new String(mqttMessage.getPayload());
-                                Gson gson = new Gson();
+                                LogUtils.e("接收消息  :"+s);
+                               *//* Gson gson = new Gson();
                                 SW_NewMessageBean sw_newMessageBean = gson.fromJson(s, SW_NewMessageBean.class);
                                 String device_name = sw_newMessageBean.getDevice_name();
                                 LogUtils.e("接收消息内容  :"+device_name);
@@ -109,7 +110,7 @@ public class MqttUtils {
                                 SW_NewMessageBean newMessageBean = new SW_NewMessageBean();
                                 sw_newMessageBean.setNewMessage(0);
                                 EventBus.getDefault().postSticky(newMessageBean);
-                                EventBus.getDefault().postSticky(new SW_UnReadNum(num));
+                                EventBus.getDefault().postSticky(new SW_UnReadNum(num));*//*
                             }
 
                             @Override
@@ -126,9 +127,10 @@ public class MqttUtils {
 
         } catch (MqttException e) {
             e.printStackTrace();
-        }
+        }*/
     }
-    private static void getNotification(Context context,String topic,String message){
+
+    private static void getNotification(Context context, String topic, String message) {
         PendingIntent contentIntent = PendingIntent.getActivity(
                 context, 0, new Intent(context, SW_WarningAccpetActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(context)
@@ -142,5 +144,28 @@ public class MqttUtils {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify((int) System.currentTimeMillis(), notification);
+    }
+
+    @Override
+    public void onMqttReceive(String msg, String topicName) {
+        LogUtils.e("接收消息内容  :" + msg);
+        num++;
+        String s = new String(msg);
+        Gson gson = new Gson();
+        SW_NewMessageBean sw_newMessageBean = gson.fromJson(s, SW_NewMessageBean.class);
+        String device_name = sw_newMessageBean.getDevice_name();
+        String control_reason = sw_newMessageBean.getControl_reason();
+        if (!TextUtils.isEmpty(device_name) && !TextUtils.isEmpty(control_reason)) {
+            getNotification(mContext, device_name, control_reason);
+        }
+        SW_NewMessageBean newMessageBean = new SW_NewMessageBean();
+        sw_newMessageBean.setNewMessage(0);
+        EventBus.getDefault().postSticky(newMessageBean);
+        EventBus.getDefault().postSticky(new SW_UnReadNum(num));
+    }
+
+    @Override
+    public void onMqttException() {
+        LogUtils.e("MQ异常 :" + "");
     }
 }

@@ -8,59 +8,58 @@ package com.dahua.searchandwarn.model;
 
 public class SW_NewMessageBean {
 
+
     /**
-     * control_similarity : 0.99
+     * control_similarity : 80
      * parentPusher : -1
-     * originalImg : http://10.23.10.21:8080/cloud-hz-controller/resource/getImage?imagePath=host00/face/20180516/577ea3c4-411f-49f3-a248-a47a3bbecc29.jpg
-     * device_latitude : 29.5830116904
-     * blackId : 7436653f1d5a40f3b6af912f6b607d06
-     * data_src_type : 1
-     * bigImg : http://10.23.10.21:8080/cloud-hz-controller/resource/getImage?imagePath=host00/face/20180516/31d71b5b-27ce-4a58-af1c-d7288a985f22.jpg
-     * device_name : 鑺卞崏鍥湴閾佺珯3鍑哄彛鍥村涓�
+     * originalImg : http://10.209.252.52:6501/pic?=d1=ib36z0dcds082-703105m3ep=t3i5d*=*4pdi=*1s5i5=21b0i2d35*717540c74-a573229-1a18*1-a0i119d5e19
+     * device_latitude : 29.493196
+     * blackId : e9b9ad95a25041e2b89741c3e7f8baef
+     * data_src_type : 3
+     * bigImg : http://10.209.252.52:6501/pic?=d41ib38e*dcdi092-78170a-27c24551745302i7b1*=5d5s0*=2dpi*=1d6i3t4pe*m5i13=-138031-00za19s=3a61d6
+     * device_name : 茶园办公室3
      * _tag_ : alarm_human_face
-     * face_gender : 1
-     * similarity : 80
-     * control_suspectname : 妯℃嫙鏁版嵁
-     * id : 1158fhtsv94w
-     * appPusher : 鑲栦赴
-     * glass : 1
-     * device_id : 50011290011320000002
-     * smallImg : http://10.23.10.21:8080/cloud-hz-controller/resource/getImage?imagePath=host00/face/20180516/577ea3c4-411f-49f3-a248-a47a3bbecc29.jpg
-     * device_longitude : 106.5124511719
-     * short_time : 2018-05-17 09:09:12
-     * source_image1 : host00/face/20180516/577ea3c4-411f-49f3-a248-a47a3bbecc29.jpg
-     * source_image2 : host00/face/20180516/31d71b5b-27ce-4a58-af1c-d7288a985f22.jpg
-     * face_smiling :
-     * save_time : 2018-05-17 09:09:12
-     * control_reason : 澶у崕娴嬭瘯妯℃嫙
-     * face_age : 30
+     * face_gender : 0
+     * similarity : 97.75509834289551
+     * control_suspectname : 唐泽君
+     * id : 17awuw1losn4
+     * appPusher : 讯之美,讯之美
+     * device_id : 50011201001310973253
+     * smallImg : http://10.209.252.52:6501/pic?=d1=ib36z0dcds082-703105m3ep=t3i5d*=*4pdi=*1s5i5=21b0i2d35*717540c74-a573229-1a18*1-a0i119d5e19
+     * device_longitude : 106.65441
+     * short_time : 2018-07-23 12:08:27
+     * source_image1 : http://10.209.252.52:6501/pic?=d1=ib36z0dcds082-703105m3ep=t3i5d*=*4pdi=*1s5i5=21b0i2d35*717540c74-a573229-1a18*1-a0i119d5e19
+     * source_image2 : http://10.209.252.52:6501/pic?=d41ib38e*dcdi092-78170a-27c24551745302i7b1*=5d5s0*=2dpi*=1d6i3t4pe*m5i13=-138031-00za19s=3a61d6
+     * face_smiling : 0
+     * save_time : 2018-07-23 12:08:27
+     * control_reason : 测试
+     * face_age : 37
      */
 
-    private double control_similarity;
-    private int parentPusher;
+    private Object control_similarity;
+    private Object parentPusher;
     private String originalImg;
-    private double device_latitude;
+    private Object device_latitude;
     private String blackId;
     private String data_src_type;
     private String bigImg;
     private String device_name;
     private String _tag_;
-    private int face_gender;
-    private int similarity;
+    private Object face_gender;
+    private Object similarity;
     private String control_suspectname;
     private String id;
     private String appPusher;
-    private int glass;
     private String device_id;
     private String smallImg;
-    private double device_longitude;
+    private Object device_longitude;
     private String short_time;
     private String source_image1;
     private String source_image2;
-    private String face_smiling;
+    private Object face_smiling;
     private String save_time;
     private String control_reason;
-    private int face_age;
+    private Object face_age;
     private int newMessage;
 
     public int getNewMessage() {
@@ -71,19 +70,19 @@ public class SW_NewMessageBean {
         this.newMessage = newMessage;
     }
 
-    public double getControl_similarity() {
+    public Object getControl_similarity() {
         return control_similarity;
     }
 
-    public void setControl_similarity(double control_similarity) {
+    public void setControl_similarity(Object control_similarity) {
         this.control_similarity = control_similarity;
     }
 
-    public int getParentPusher() {
+    public Object getParentPusher() {
         return parentPusher;
     }
 
-    public void setParentPusher(int parentPusher) {
+    public void setParentPusher(Object parentPusher) {
         this.parentPusher = parentPusher;
     }
 
@@ -95,11 +94,11 @@ public class SW_NewMessageBean {
         this.originalImg = originalImg;
     }
 
-    public double getDevice_latitude() {
+    public Object getDevice_latitude() {
         return device_latitude;
     }
 
-    public void setDevice_latitude(double device_latitude) {
+    public void setDevice_latitude(Object device_latitude) {
         this.device_latitude = device_latitude;
     }
 
@@ -143,19 +142,19 @@ public class SW_NewMessageBean {
         this._tag_ = _tag_;
     }
 
-    public int getFace_gender() {
+    public Object getFace_gender() {
         return face_gender;
     }
 
-    public void setFace_gender(int face_gender) {
+    public void setFace_gender(Object face_gender) {
         this.face_gender = face_gender;
     }
 
-    public int getSimilarity() {
+    public Object getSimilarity() {
         return similarity;
     }
 
-    public void setSimilarity(int similarity) {
+    public void setSimilarity(Object similarity) {
         this.similarity = similarity;
     }
 
@@ -183,14 +182,6 @@ public class SW_NewMessageBean {
         this.appPusher = appPusher;
     }
 
-    public int getGlass() {
-        return glass;
-    }
-
-    public void setGlass(int glass) {
-        this.glass = glass;
-    }
-
     public String getDevice_id() {
         return device_id;
     }
@@ -207,11 +198,11 @@ public class SW_NewMessageBean {
         this.smallImg = smallImg;
     }
 
-    public double getDevice_longitude() {
+    public Object getDevice_longitude() {
         return device_longitude;
     }
 
-    public void setDevice_longitude(double device_longitude) {
+    public void setDevice_longitude(Object device_longitude) {
         this.device_longitude = device_longitude;
     }
 
@@ -239,11 +230,11 @@ public class SW_NewMessageBean {
         this.source_image2 = source_image2;
     }
 
-    public String getFace_smiling() {
+    public Object getFace_smiling() {
         return face_smiling;
     }
 
-    public void setFace_smiling(String face_smiling) {
+    public void setFace_smiling(Object face_smiling) {
         this.face_smiling = face_smiling;
     }
 
@@ -263,42 +254,11 @@ public class SW_NewMessageBean {
         this.control_reason = control_reason;
     }
 
-    public int getFace_age() {
+    public Object getFace_age() {
         return face_age;
     }
 
-    public void setFace_age(int face_age) {
+    public void setFace_age(Object face_age) {
         this.face_age = face_age;
-    }
-
-    @Override
-    public String toString() {
-        return "SW_NewMessageBean{" +
-                "control_similarity=" + control_similarity +
-                ", parentPusher=" + parentPusher +
-                ", originalImg='" + originalImg + '\'' +
-                ", device_latitude=" + device_latitude +
-                ", blackId='" + blackId + '\'' +
-                ", data_src_type='" + data_src_type + '\'' +
-                ", bigImg='" + bigImg + '\'' +
-                ", device_name='" + device_name + '\'' +
-                ", _tag_='" + _tag_ + '\'' +
-                ", face_gender=" + face_gender +
-                ", similarity=" + similarity +
-                ", control_suspectname='" + control_suspectname + '\'' +
-                ", id='" + id + '\'' +
-                ", appPusher='" + appPusher + '\'' +
-                ", glass=" + glass +
-                ", device_id='" + device_id + '\'' +
-                ", smallImg='" + smallImg + '\'' +
-                ", device_longitude=" + device_longitude +
-                ", short_time='" + short_time + '\'' +
-                ", source_image1='" + source_image1 + '\'' +
-                ", source_image2='" + source_image2 + '\'' +
-                ", face_smiling='" + face_smiling + '\'' +
-                ", save_time='" + save_time + '\'' +
-                ", control_reason='" + control_reason + '\'' +
-                ", face_age=" + face_age +
-                '}';
     }
 }

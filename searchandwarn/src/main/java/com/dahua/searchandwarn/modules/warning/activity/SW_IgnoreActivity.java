@@ -141,6 +141,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
 
                     @Override
                     public void onError(Throwable e) {
+                        LoadingDialogUtils.dismiss();
                         ToastUtils.showLong("忽略失败");
                     }
 

@@ -160,7 +160,6 @@ public class SW_UndisposeAdapter extends BaseQuickAdapter<SW_HistoryWarnBean.Dat
                 intent.setAction("com.mm.dss.alarm.map");
                 intent.putExtra("longtitude", item.getDeviceX());//经度
                 intent.putExtra("latitude", item.getDeviceY());//纬度
-
                 intent.putExtra("name", "dahua");
                 context.startActivity(intent);
                 notifyDataSetChanged();

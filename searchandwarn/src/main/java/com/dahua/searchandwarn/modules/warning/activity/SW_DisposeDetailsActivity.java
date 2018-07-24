@@ -130,7 +130,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
 
                     @Override
                     public void onComplete() {
-
+                        LoadingDialogUtils.dismiss();
                     }
                 });
     }

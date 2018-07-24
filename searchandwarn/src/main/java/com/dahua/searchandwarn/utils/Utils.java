@@ -34,10 +34,10 @@ public final class Utils {
      *
      * @param app 应用
      */
-    public static void init(@NonNull final Application app) {
-        MqttUtils mqttUtils = new MqttUtils();
-        mqttUtils.connectMqtt(app);
+    public static void init(@NonNull final Application app,String ip) {
         Utils.sApplication = app;
+        MqttUtils mqttUtils = new MqttUtils();
+        mqttUtils.connectMqtt(app,ip);
         /*Intent intent = new Intent(app, UnReadService.class);
         app.startService(intent);*/
         app.registerActivityLifecycleCallbacks(mCallbacks);

@@ -26,6 +26,7 @@
 
     <Button
         android:id="@+id/bt3"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -33,6 +34,7 @@
         android:text="预警" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/bt4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

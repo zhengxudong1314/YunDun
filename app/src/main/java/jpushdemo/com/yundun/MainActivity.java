@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         edit.putString("name", "zxd").commit();
         compositeDisposable = new CompositeDisposable();
         rv = (RecyclerView) findViewById(R.id.rv);
-        Utils.init(this.getApplication());
+        //10.23.10.35
+        Utils.init(this.getApplication(),"61.128.209.66");
         EventBus.getDefault().register(this);
         bt4 = (Button) findViewById(R.id.bt4);
         Button bt3 = (Button) findViewById(R.id.bt3);
