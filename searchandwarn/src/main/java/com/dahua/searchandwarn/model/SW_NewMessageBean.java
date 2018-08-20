@@ -1,12 +1,14 @@
 package com.dahua.searchandwarn.model;
 
+import java.io.Serializable;
+
 /**
  * 作用：
  * 作者： 郑旭东
  * 日期：2018/5/22
  */
 
-public class SW_NewMessageBean {
+public class SW_NewMessageBean implements Serializable{
 
 
     /**

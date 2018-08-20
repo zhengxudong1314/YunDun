@@ -9,7 +9,7 @@ import android.text.TextUtils;
 
 import com.dahua.searchandwarn.model.SW_NewMessageBean;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
-import com.dahua.searchandwarn.modules.warning.activity.SW_WarningAccpetActivity;
+import com.dahua.searchandwarn.modules.warning.activity.SW_WarningDetailsActivity;
 import com.dahua.searchandwarn.service.IMqttMsgListener;
 import com.dahua.searchandwarn.service.MqttService;
 import com.dahua.searchandwarn.utils.LogUtils;
@@ -130,9 +130,11 @@ public class MqttUtils implements IMqttMsgListener {
         }*/
     }
 
-    private static void getNotification(Context context, String topic, String message) {
+    private static void getNotification(Context context, String topic, String message,String alarmId) {
+        Intent intent = new Intent(context, SW_WarningDetailsActivity.class);
+        intent.putExtra("alarmId", alarmId);
         PendingIntent contentIntent = PendingIntent.getActivity(
-                context, 0, new Intent(context, SW_WarningAccpetActivity.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                context, 0,intent , PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = new Notification.Builder(context)
                 .setSmallIcon(com.dahua.searchandwarn.R.drawable.test1)
                 .setContentTitle(topic)
@@ -156,13 +158,20 @@ public class MqttUtils implements IMqttMsgListener {
         String device_name = sw_newMessageBean.getDevice_name();
         String control_reason = sw_newMessageBean.getControl_reason();
         if (!TextUtils.isEmpty(device_name) && !TextUtils.isEmpty(control_reason)) {
-            getNotification(mContext, device_name, control_reason);
+            String appPusher = sw_newMessageBean.getAppPusher();
+            String[] split = appPusher.split(",");
+            for (int i = 0; i < split.length; i++) {
+                if (SW_Constracts.getUserName(mContext).equals(split[i])){
+                    getNotification(mContext, device_name, control_reason,sw_newMessageBean.getId());
+                }
+            }
+
         }
         SW_NewMessageBean newMessageBean = new SW_NewMessageBean();
         sw_newMessageBean.setNewMessage(0);
         EventBus.getDefault().postSticky(newMessageBean);
         EventBus.getDefault().postSticky(new SW_UnReadNum(num));
-    }
+}
 
     @Override
     public void onMqttException() {

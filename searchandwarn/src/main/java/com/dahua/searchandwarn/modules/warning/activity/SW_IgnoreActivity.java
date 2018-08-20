@@ -16,6 +16,7 @@ import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_IgnoreBean;
+import com.dahua.searchandwarn.model.SW_NewMessageBean;
 import com.dahua.searchandwarn.model.SW_SingleWarnBean;
 import com.dahua.searchandwarn.model.SW_TypeBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
@@ -54,6 +55,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
     private EditText etReason;
     private String ignoreMsg;
     private SW_SingleWarnBean.DataBean datas;
+    private SW_NewMessageBean newMessageBean;
     private TextView tvLoadingError;
     private String position;
 
@@ -62,8 +64,9 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sw_activity_ignore);
         initView();
-        getBaseNetData();
         tvTitle.setText(getString(R.string.ignore_warn));
+
+        getBaseNetData();
     }
 
     private void getBaseNetData() {
@@ -83,9 +86,10 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                             tvLoadingError.setVisibility(View.GONE);
                             LoadingDialogUtils.dismiss();
                             datas = sw_singleWarnBean.getData();
-                            tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
+                            if (datas != null)
+                                tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
                             tvCaptureTime.setText(datas.getShortTime());
-                            tvId.setText(datas.getDeviceCode());
+                            tvId.setText(datas.getFaceCardNum());
                             if (datas.getParentPusher().equals("-1")) {
                                 tvPusher.setText("系统");
                             } else {
@@ -130,7 +134,7 @@ public class SW_IgnoreActivity extends AppCompatActivity implements View.OnClick
                     public void onNext(SW_IgnoreBean sw_ignoreBean) {
                         int retCode = sw_ignoreBean.getRetCode();
                         if (retCode == 0) {
-                            EventBus.getDefault().postSticky(new SW_TypeBean(position,"已忽略"));
+                            EventBus.getDefault().postSticky(new SW_TypeBean(position, "已忽略"));
                             ToastUtils.showShort("忽略成功");
                             LoadingDialogUtils.dismiss();
                             finish();

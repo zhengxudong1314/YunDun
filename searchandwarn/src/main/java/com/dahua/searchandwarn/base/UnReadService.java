@@ -9,7 +9,6 @@ import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.dahua.searchandwarn.utils.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,6 +46,7 @@ public class UnReadService extends Service {
         map.put("pageNum", "1");
         map.put("pageSize", "50");
         getNetData(map);
+
     }
 
     @Nullable
@@ -64,6 +64,7 @@ public class UnReadService extends Service {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
+
                     }
 
                     @Override
@@ -71,18 +72,19 @@ public class UnReadService extends Service {
                         int retCode = historyWarnBean.getRetCode();
                         if (retCode == 0) {
                             List<SW_HistoryWarnBean.DataBean> datas = historyWarnBean.getData();
-                            for (int i = 0; i < datas.size(); i++) {
-                                if (datas.get(i).getStatus().equals("待处理") || datas.get(i).getStatus().equals("处理中")) {
-                                    undisposeData.add(datas.get(i));
+                            if (datas != null && datas.size() > 0)
+                                for (int i = 0; i < datas.size(); i++) {
+                                    if (datas.get(i).getStatus().equals("待处理") || datas.get(i).getStatus().equals("处理中")) {
+                                        undisposeData.add(datas.get(i));
+                                    }
                                 }
-                            }
                             List<String> list = sqlietModel.queryAll();
                             int flag = 0;
                             for (int i = 0; i < undisposeData.size(); i++) {
                                 String alarmId = undisposeData.get(i).getAlarmId();
-                                if (list.size()==0){
+                                if (list.size() == 0) {
                                     num = undisposeData.size();
-                                }else {
+                                } else {
                                     for (int j = 0; j < list.size(); j++) {
                                         if (alarmId.equals(list.get(j))) {
                                             flag = 0;
@@ -99,13 +101,13 @@ public class UnReadService extends Service {
 
                             }
                             EventBus.getDefault().postSticky(new SW_UnReadNum(num));
-                            LogUtils.e(num + "");
 
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        EventBus.getDefault().postSticky(new SW_UnReadNum(0));
 
                     }
 

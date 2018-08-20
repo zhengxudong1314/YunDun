@@ -100,7 +100,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
                             tvNoData.setVisibility(View.GONE);
                             tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
                             tvCaptureTime.setText(datas.getShortTime());
-                            tvId.setText(datas.getDeviceCode());
+                            tvId.setText(datas.getFaceCardNum());
                             if (datas.getParentPusher().equals("-1")) {
                                 tvPusher.setText("系统");
                             } else {
@@ -204,6 +204,7 @@ public class SW_DisposeDetailsActivity extends AppCompatActivity implements View
             if (TextUtils.isEmpty(suggestion)) {
                 ToastUtils.showShort("请填写处理意见");
             } else {
+                ToastUtils.showShort("11111");
                 LoadingDialogUtils.show(this);
                 getDisposeData();
             }

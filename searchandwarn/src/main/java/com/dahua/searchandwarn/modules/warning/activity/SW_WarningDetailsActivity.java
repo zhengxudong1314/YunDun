@@ -45,13 +45,14 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
     private TextView tvNoData;
     private SW_SingleWarnBean.DataBean datas;
     private TextView tvLoadingError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sw_activity_warning_details);
         initView();
-        getNetData();
         tvTitle.setText("预警详情");
+        getNetData();
 
     }
 
@@ -75,7 +76,7 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
                             tvNoData.setVisibility(View.GONE);
                             tvSimilarity.setText(TwoPointUtils.doubleToString(datas.getSimilarity()) + "%");
                             tvCaptureTime.setText(datas.getShortTime());
-                            tvId.setText(datas.getDeviceCode());
+                            tvId.setText(datas.getFaceCardNum());
                             if (datas.getParentPusher().equals("-1")) {
                                 tvPusher.setText("系统");
                             } else {
@@ -90,7 +91,7 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
                             rv.setNestedScrollingEnabled(false);
                             rv.setLayoutManager(new LinearLayoutManager(SW_WarningDetailsActivity.this));
                             rv.setAdapter(new SW_LogAdapter(R.layout.sw_item_log, datas.getLoglist()));
-                        }else {
+                        } else {
                             LoadingDialogUtils.dismiss();
                             tvLoadingError.setText("加载失败");
                         }
@@ -151,15 +152,15 @@ public class SW_WarningDetailsActivity extends AppCompatActivity implements View
 
         } else if (i == R.id.iv_one) {
             //抓拍图片
-            intent.putExtra("imgUrl",datas.getSmallImg());
+            intent.putExtra("imgUrl", datas.getSmallImg());
             startActivity(intent);
         } else if (i == R.id.iv_two) {
             //图库图片
-            intent.putExtra("imgUrl",datas.getOriginalImg());
+            intent.putExtra("imgUrl", datas.getOriginalImg());
             startActivity(intent);
         } else if (i == R.id.iv_three) {
             //选择大图
-            intent.putExtra("imgUrl",datas.getBigImg());
+            intent.putExtra("imgUrl", datas.getBigImg());
             startActivity(intent);
         }
     }

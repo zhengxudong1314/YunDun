@@ -20,7 +20,6 @@ import com.dahua.searchandwarn.base.SW_Constracts;
 import com.dahua.searchandwarn.model.SW_HistoryWarnBean;
 import com.dahua.searchandwarn.net.SW_RestfulApi;
 import com.dahua.searchandwarn.net.SW_RestfulClient;
-import com.dahua.searchandwarn.utils.ToastUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -134,6 +133,7 @@ public class SW_DisposeFragment extends Fragment {
                             loadingMore.setVisibility(View.GONE);
                             LoadingDialogUtils.dismiss();
                             List<SW_HistoryWarnBean.DataBean> datas = historyWarnBean.getData();
+                            if (datas != null && datas.size() > 0)
                             for (int i = 0; i < datas.size(); i++) {
                                 if (datas.get(i).getStatus().equals("已忽略") || datas.get(i).getStatus().equals("已消警")) {
                                     disposeData.add(datas.get(i));
@@ -151,7 +151,6 @@ public class SW_DisposeFragment extends Fragment {
 
                         } else {
                             LoadingDialogUtils.dismiss();
-                            ToastUtils.showLong("忽略失败");
                         }
 
 
@@ -187,6 +186,9 @@ public class SW_DisposeFragment extends Fragment {
             Date date1 = stringToDate(dataBean.getSaveTime());
             Date date2 = stringToDate(t1.getSaveTime());
             // 对日期字段进行升序，如果欲降序可采用after方法
+            if (dataBean.getSaveTime().equals(t1.getSaveTime())){
+                return 0;
+            }
             if (date1.before(date2)) {
                 return 1;
             }

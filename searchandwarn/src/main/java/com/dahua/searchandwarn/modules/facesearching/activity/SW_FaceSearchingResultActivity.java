@@ -295,6 +295,9 @@ public class SW_FaceSearchingResultActivity extends AppCompatActivity implements
             Date date1 = stringToDate(dataBean.getFaceTime());
             Date date2 = stringToDate(t1.getFaceTime());
             // 对日期字段进行升序，如果欲降序可采用after方法
+            if (dataBean.getFaceTime().equals(t1.getFaceTime())){
+                return 0;
+            }
             if (date1.before(date2)) {
                 return 1;
             }

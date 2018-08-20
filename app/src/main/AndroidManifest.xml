@@ -13,20 +13,23 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".TestActivity">
 
         </activity>
+
         <service android:name="com.dahua.searchandwarn.base.UnReadService">
         </service>
         <service android:name="com.dahua.searchandwarn.service.MqttService">
         </service>
+        <receiver android:name=".MyReceiver">
+            <intent-filter >
+                <action android:name="com.example.leidong.action.MyReceiver"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

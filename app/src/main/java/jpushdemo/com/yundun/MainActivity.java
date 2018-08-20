@@ -3,17 +3,16 @@ package jpushdemo.com.yundun;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
-import com.dahua.searchandwarn.base.UnReadService;
 import com.dahua.searchandwarn.model.SW_AddressTreeBean;
 import com.dahua.searchandwarn.model.SW_UnReadNum;
 import com.dahua.searchandwarn.modules.facesearching.activity.SW_FaceSearchingActivity;
 import com.dahua.searchandwarn.modules.warning.activity.SW_WarningAccpetActivity;
-import com.dahua.searchandwarn.utils.Utils;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -39,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rv;
     private CompositeDisposable compositeDisposable;
     Map<String, SW_AddressTreeBean.BaseInfo> dataMap = new HashMap<>();
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +50,24 @@ public class MainActivity extends AppCompatActivity {
         edit.putString("name", "zxd").commit();
         compositeDisposable = new CompositeDisposable();
         rv = (RecyclerView) findViewById(R.id.rv);
+       /* //创建Intent
+        Intent intent1 = new Intent();
+        intent1.setAction("com.example.leidong.action.MyReceiver");
+        intent1.putExtra("msg", 2);
+        //发送广播
+        sendBroadcast(intent1);*/
         //10.23.10.35
-        Utils.init(this.getApplication(),"61.128.209.66");
+        //Utils.init(this.getApplication(),"61.128.209.66");
+
         EventBus.getDefault().register(this);
         bt4 = (Button) findViewById(R.id.bt4);
         Button bt3 = (Button) findViewById(R.id.bt3);
         Button bt2 = (Button) findViewById(R.id.bt2);
         Button bt1 = (Button) findViewById(R.id.bt1);
-        Intent intent = new Intent(this, UnReadService.class);
+        /*Intent intent = new Intent(this, UnReadService.class);
         startService(intent);
+        Intent intent1 = new Intent(this, MqttService.class);
+        startService(intent1);*/
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,10 +92,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-       // getNetData();
+        // getNetData();
 
 
     }
+
+
 
     private void filter(SW_AddressTreeBean.BaseInfo bean) {
         if (bean.getChildren() != null) {

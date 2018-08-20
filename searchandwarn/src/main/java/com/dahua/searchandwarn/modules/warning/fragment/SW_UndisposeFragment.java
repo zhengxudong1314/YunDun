@@ -94,7 +94,7 @@ public class SW_UndisposeFragment extends Fragment {
         undisposeData = new ArrayList<>();
         rv.setLayoutManager(linearLayoutManager);
         getNetData();
-
+        stringToDate("2018-07-27 14:35:33");
 
         tvLoading.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,11 +151,12 @@ public class SW_UndisposeFragment extends Fragment {
                         if (retCode == 0) {
                             loadingMore.setVisibility(View.GONE);
                             List<SW_HistoryWarnBean.DataBean> datas = historyWarnBean.getData();
-                            for (int i = 0; i < datas.size(); i++) {
-                                if (datas.get(i).getStatus().equals("待处理") || datas.get(i).getStatus().equals("处理中")) {
-                                    undisposeData.add(datas.get(i));
+                            if (datas != null && datas.size() > 0)
+                                for (int i = 0; i < datas.size(); i++) {
+                                    if (datas.get(i).getStatus().equals("待处理") || datas.get(i).getStatus().equals("处理中")) {
+                                        undisposeData.add(datas.get(i));
+                                    }
                                 }
-                            }
                             Collections.sort(undisposeData, new DateComparator());
                             undisposeAdapter = new SW_UndisposeAdapter(getActivity(), R.layout.sw_item_undispose_unread, undisposeData, list);
                             if (undisposeData == null || undisposeData.size() == 0) {
@@ -185,6 +186,7 @@ public class SW_UndisposeFragment extends Fragment {
 
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -208,7 +210,7 @@ public class SW_UndisposeFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
     public void onNewMessage(SW_NewMessageBean newMessageBean) {
-        if ((int)newMessageBean.getNewMessage() == 0) {
+        if ((int) newMessageBean.getNewMessage() == 0) {
             undisposeData.clear();
             pageNum = 1;
             getNetData();
@@ -222,6 +224,9 @@ public class SW_UndisposeFragment extends Fragment {
             Date date1 = stringToDate(dataBean.getSaveTime());
             Date date2 = stringToDate(t1.getSaveTime());
             // 对日期字段进行升序，如果欲降序可采用after方法
+            if (dataBean.getSaveTime().equals(t1.getSaveTime())) {
+                return 0;
+            }
             if (date1.before(date2)) {
                 return 1;
             }
@@ -235,4 +240,5 @@ public class SW_UndisposeFragment extends Fragment {
         Date dateValue = simpleDateFormat.parse(dateString, position);
         return dateValue;
     }
+
 }

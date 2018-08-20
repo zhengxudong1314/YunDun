@@ -1,7 +1,6 @@
 package com.dahua.searchandwarn.modules.warning.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +18,6 @@ import com.dahua.searchandwarn.R;
 import com.dahua.searchandwarn.base.LoadingDialogUtils;
 import com.dahua.searchandwarn.modules.warning.fragment.SW_DisposeFragment;
 import com.dahua.searchandwarn.modules.warning.fragment.SW_UndisposeFragment;
-import com.dahua.searchandwarn.utils.LogUtils;
 import com.dahua.searchandwarn.weight.SW_NoScrollViewPager;
 
 import java.lang.reflect.Field;
@@ -45,9 +43,8 @@ public class SW_WarningAccpetActivity extends AppCompatActivity implements View.
             getSupportActionBar().hide();
         }*/
         setContentView(R.layout.sw_activity_warning_accpet);
-        SharedPreferences sp = getSharedPreferences("dahua", MODE_PRIVATE);
-        String name = sp.getString("name", "");
-        LogUtils.e(name);
+        //SharedPreferences sp = getSharedPreferences("dahua", MODE_PRIVATE);
+        //String name = sp.getString("name", "");
         //初始化控件
         initView();
         initData();
@@ -91,6 +88,11 @@ public class SW_WarningAccpetActivity extends AppCompatActivity implements View.
         tabs.add("已处理");
         listFragments.add(new SW_UndisposeFragment());
         listFragments.add(new SW_DisposeFragment());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     private void initView() {

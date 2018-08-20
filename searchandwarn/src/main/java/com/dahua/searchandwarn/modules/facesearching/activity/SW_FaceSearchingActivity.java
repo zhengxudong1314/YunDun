@@ -402,8 +402,7 @@ public class SW_FaceSearchingActivity extends AppCompatActivity implements View.
                                 //Glide.with(SW_FaceSearchingActivity.this).load(outfile).placeholder(R.drawable.sw_home_page_defect).into(ivFace);
                                 llFace.setVisibility(View.GONE);
                                 ivFace.setVisibility(View.VISIBLE);
-                                LogUtils.e(outfile);
-                                getPic(path);
+                                getPic(outfile);
                                 //return the compressed file path
                             }
                         });
